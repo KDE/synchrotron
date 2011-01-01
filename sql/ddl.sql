@@ -1,3 +1,9 @@
+-- DROP TABLE scanning
+CREATE TABLE scanning
+(
+    lastScan    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
 -- drop sequence seq_providerIds;
 CREATE SEQUENCE seq_providerIds;
 
@@ -8,6 +14,7 @@ CREATE TABLE providers
     name        TEXT        NOT NULL,
     typename    TEXT        -- FIXME: i18n
 );
+CREATE INDEX idx_providers_names ON providers(name);
 
 -- drop sequence seq_contentIds;
 CREATE SEQUENCE seq_contentIds;
