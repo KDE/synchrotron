@@ -11,10 +11,9 @@ CREATE SEQUENCE seq_providerIds;
 CREATE TABLE providers
 (
     id          INT         PRIMARY KEY DEFAULT nextval('seq_providerIds'),
-    name        TEXT        NOT NULL,
+    name        TEXT        NOT NULL UNIQUE,
     typename    TEXT        -- FIXME: i18n
 );
-CREATE INDEX idx_providers_names ON providers(name);
 
 -- drop sequence seq_contentIds;
 CREATE SEQUENCE seq_contentIds;
