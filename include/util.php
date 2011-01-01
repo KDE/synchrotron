@@ -1,8 +1,6 @@
 <?php
 
 /*
-  This file is part of Pantheon CMS
-
   Copyright (C) 2006 Andrew Kopciuch <akopciuch@bddf.ca>
   Copyright (C) 2006 Aaron Seigo <aseigo@bddf.ca>
 
