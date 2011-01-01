@@ -2,13 +2,15 @@
 
 // MAIN CONFIGURATION
 global $common_siteHost, $common_sitePath;
-$common_siteHost = 'http://' . $_SERVER['SERVER_NAME'];
-$common_sitePath = '/';
+if (isset($_SERVER['SERVER_NAME'])) {
+    $common_siteHost = 'http://' . $_SERVER['SERVER_NAME'];
+    $common_sitePath = '/';
+}
 
 // // BASE PATHS AND URLS
 global $common_baseURL, $common_htmlPath, $common_includePath;
 $common_baseURL = $common_siteHost . $common_sitePath;
-$basePath = '/home/aseigo/src/synchrotron'
+$basePath = '/home/aseigo/src/synchrotron';
 $common_repoPath = '/home/aseigo/src/testrepo';
 $common_htmlPath = $basePath . '/ocs';
 $common_includePath = $basePath . '/include';
