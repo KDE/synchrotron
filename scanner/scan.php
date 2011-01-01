@@ -1,13 +1,15 @@
 #!/usr/bin/env php
 <?php
 
-$lockFile = '/tmp/synchrotron_scan.lock';
-$resource = fopen($lockFile, 'c');
+include_once('../include/config.php');
+
+$configFile = "$common_repoPath/config";
+$configFd = fopen($configFile, 'c');
 
 function lock()
 {
-    global $lockFile, $resource;
-    if (!flock($resource, LOCK_EX | LOCK_NB)) {
+    global $configFd;
+    if (!flock($configFd, LOCK_EX | LOCK_NB)) {
         print("locking failed\n");
         exit();
     }
@@ -15,12 +17,12 @@ function lock()
 
 function unlock()
 {
-    global $lockFile, $resource;
-    $resource = fopen($lockFile, 'c');
-    flock($resource, LOCK_UN);
+    global $configFd;
+    flock($configFd, LOCK_UN);
 }
 
 lock();
+
 
 unlock();
 
