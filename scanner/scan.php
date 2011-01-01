@@ -19,9 +19,11 @@ function unlock()
 {
     global $configFd;
     flock($configFd, LOCK_UN);
+    fclose($configFd);
 }
 
 lock();
+
 
 
 unlock();
