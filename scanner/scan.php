@@ -120,10 +120,10 @@ function findChangedAssets($config, $providers)
         $ts = db_query($db, "INSERT INTO scanning (lastScan) VALUES (CURRENT_TIMESTAMP);");
     } else {
         // get changes in the git repo since our last scan
-        db_query($db, "UPDATE scanning set lastScan = CURRENT_TIMESTAMP;");
         list($ts) = db_row($ts, 0);
         $log = Array();
         exec("git log --since=$ts --pretty=format:\"\" --name-only", $log);
+        db_query($db, "UPDATE scanning set lastScan = CURRENT_TIMESTAMP;");
 
         foreach ($config as $provider => $providerConfig) {
             //print("Listing all assets for $provider\n");
@@ -178,9 +178,12 @@ function processProviderAssets($assets, $providerId, $config)
     $db = db_connect();
 
     foreach ($assets as $asset => $path) {
-        print("Processing $providerId $asset at $path\n");
+        //print("Processing $providerId $asset at $path\n");
         if (!is_file("$path/$metadataPath")) {
-            print("Fail ... no such thing as $path/$metadataPath\n");
+            //print("No such thing as $path/$metadataPath, perhaps it was deleted?\n");
+            sql_addToWhereClause($where, '', 'provider', '=', $providerId);
+            sql_addToWhereClause($where, 'and', 'id', '=', $asset);
+            db_delete($db, 'content', $where);
             continue;
         }
 
@@ -195,7 +198,7 @@ function processProviderAssets($assets, $providerId, $config)
         //  id | provider | created | updated | downloads | version | author | homepage | preview | name | description
         unset($where);
         sql_addToWhereClause($where, '', 'provider', '=', $providerId);
-        sql_addToWhereClause($where, 'and', 'id', '=', $plugin);
+        sql_addToWhereClause($where, 'and', 'id', '=', $asset);
         $query = db_query($db, "select * from content where $where;");
         if (db_numRows($query) > 0) {
             // just update the field
@@ -211,7 +214,7 @@ function processProviderAssets($assets, $providerId, $config)
             // new asset!
             unset($fields, $values);
             sql_addIntToInsert($fields, $values, 'provider', $providerId);
-            sql_addScalarToInsert($fields, $values, 'id', $plugin);
+            sql_addScalarToInsert($fields, $values, 'id', $asset);
             sql_addScalarToInsert($fields, $values, 'version', $metadata->getValue('X-KDE-PluginInfo-Version', 'Desktop Entry'));
             sql_addScalarToInsert($fields, $values, 'author', $metadata->getValue('X-KDE-PluginInfo-Author', 'Desktop Entry'));
             sql_addScalarToInsert($fields, $values, 'homepage', $metadata->getValue('X-KDE-PluginInfo-Website', 'Desktop Entry'));
