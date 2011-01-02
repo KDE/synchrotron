@@ -78,7 +78,7 @@ function providers($config)
 
 function setupProviderOCS($provider)
 {
-    global $common_htmlPath;
+    global $common_basePath, $common_htmlPath;
     $path = "$common_htmlPath/$provider";
     if (is_dir($path)) {
         return;
@@ -90,8 +90,22 @@ function setupProviderOCS($provider)
 
     $staticFiles = Array('licenses', 'distributions', 'dependencies', 'homepages');
     foreach ($staticFiles as $file) {
-        copy("$common_htmlPath/$file", "$path/$file");
+        copy("$common_basePath/scanner/templates/$file", "$path/$file");
     }
+
+    $providerXml = "<providers>
+        <provider>
+         <id>opendesktop</id>
+          <location>$common_baseURL</location>
+           <name>KDE Synchrotron</name>
+           <icon></icon>
+           <services>
+           <content ocsversion=\"1.3\" />
+           </services>
+           </provider>
+        </providers>";
+    $providerFile = fopen("$path/provider.xml", 'w');
+    fwrite($providerFile, $providerXml);
 }
 
 // finds all entries that have changed in the git repository
