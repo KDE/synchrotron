@@ -70,11 +70,31 @@ function providers($config)
         }
 
         list($providers[$provider]) = db_row($result, 0);
+        setupProviderOCS($provider);
     }
 
     return $providers;
 }
 
+function setupProviderOCS($provider)
+{
+    global $common_htmlPath;
+    $path = "$common_htmlPath/$provider";
+    if (is_dir($path)) {
+        return;
+    }
+
+    // in case it already existed as a file?
+    unlink($path);
+    mkdir($path);
+
+    $files = Array('licenses');
+    foreach ($files as $file) {
+        copy("$common_htmlPath/$file", "$path/$file");
+    }
+}
+
+// finds all entries that have changed in the git repository
 function findChangedAssets($config, $providers)
 {
     global $common_repoPath;
