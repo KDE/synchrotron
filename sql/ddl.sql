@@ -35,10 +35,10 @@ CREATE TABLE providers
 -- drop sequence seq_contentIds;
 CREATE SEQUENCE seq_contentIds;
 
--- DROP TABLE content
+-- DROP TABLE content;
 CREATE TABLE content
 (
-    id          INT         PRIMARY KEY DEFAULT nextval('seq_providerIds'),
+    id          TEXT        NOT NULL,
     provider    INT         NOT NULL REFERENCES providers(id) ON DELETE CASCADE,
     created     TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated     TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -48,6 +48,9 @@ CREATE TABLE content
     homepage    TEXT,
     preview     TEXT,
     name        TEXT        NOT NULL, -- FIXME: i18n
-    description TEXT -- FIXME: i18n
+    description TEXT, -- FIXME: i18n
+    CONSTRAINT content_pk PRIMARY KEY (id, provider)
 );
+
+
 
