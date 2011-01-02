@@ -117,10 +117,9 @@ function findChangedAssets($config)
             $assets[$provider] = $providerAssets;
         }
 
-        //$ts = db_query($db, "INSERT INTO scanning (lastScan) VALUES (CURRENT_TIMESTAMP);");
+        $ts = db_query($db, "INSERT INTO scanning (lastScan) VALUES (CURRENT_TIMESTAMP);");
         return $assets;
     }
-
 }
 
 function processAssets($assets, $providers, $config)
@@ -164,11 +163,19 @@ function processProviderAssets($assets, $providerId, $config)
         //  id | provider | created | updated | downloads | version | author | homepage | preview | name | description
         unset($where);
         sql_addToWhereClause($where, '', 'provider', '=', $providerId);
-        sql_addToWhereClause($where, '', 'id', '=', $plugin);
-        $query = db_query($db, "select * from content where $where;");
+        sql_addToWhereClause($where, 'and', 'id', '=', $plugin);
+        $query = db_query($db, "select * from content where $where;", 1);
         if (db_numRows($query) > 0) {
             print("gonna update\n");
             // just update the field
+            unset($fields);
+            sql_addScalarToUpdate($fields, 'version', $metadata->getValue('X-KDE-PluginInfo-Version', 'Desktop Entry'));
+            sql_addScalarToUpdate($fields, 'author', $metadata->getValue('X-KDE-PluginInfo-Author', 'Desktop Entry'));
+            sql_addScalarToUpdate($fields, 'homepage', $metadata->getValue('X-KDE-PluginInfo-Website', 'Desktop Entry'));
+            //FIXME: get preview image from asset dir! sql_addScalarToUpdate($fields, 'preview', <image path>);
+            sql_addScalarToUpdate($fields, 'name', $metadata->getValue('Name', 'Desktop Entry')); // FIXME: i18n
+            sql_addScalarToUpdate($fields, 'description', $metadata->getValue('Comment', 'Desktop Entry'));
+            db_update($db, 'content', $fields, $where);
         } else {
             // new asset!
             unset($fields, $values);
@@ -180,7 +187,7 @@ function processProviderAssets($assets, $providerId, $config)
             //FIXME: get preview image from asset dir! sql_addScalarToInsert($fields, $values, 'preview', <image path>);
             sql_addScalarToInsert($fields, $values, 'name', $metadata->getValue('Name', 'Desktop Entry')); // FIXME: i18n
             sql_addScalarToInsert($fields, $values, 'description', $metadata->getValue('Comment', 'Desktop Entry'));
-            db_insert($db, 'content', $fields, $values, 1);
+            db_insert($db, 'content', $fields, $values);
         }
     }
 }
