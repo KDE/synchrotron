@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<ocs>
+    <meta>
+        <status>ok</status>
+        <statuscode>100</statuscode>
+        <message></message>
+        <totalitems>0</totalitems>
+    </meta>
+
+    <data>
+    </data>
+</ocs>
