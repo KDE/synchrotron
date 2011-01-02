@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+<ocs>
+ <meta>
+  <status>ok</status>
+  <statuscode>100</statuscode>
+  <message></message>
+  <totalitems>16</totalitems>
+ </meta>
+
+ <data>
+   <name>Artistic 2.0</name>
+   <link>http://dev.perl.org/perl6/rfc/346.html</link>
+  </license>
+  <license>
+   <id>6</id>
+   <name>BSD</name>
+   <link>http://www.opensource.org/licenses/bsd-license.php</link>
+
+  </license>
+  <license>
+   <id>9</id>
+   <name>CPL 1.0</name>
+   <link>http://www.opensource.org/licenses/cpl1.0.php</link>
+  </license>
+  <license>
+
+   <id>10</id>
+   <name>Creative Commons by</name>
+   <link>http://creativecommons.org/licenses/by/3.0/</link>
+  </license>
+  <license>
+   <id>13</id>
+   <name>Creative Commons by-nc</name>
+
+   <link>http://creativecommons.org/licenses/by-nc/3.0/</link>
+  </license>
+  <license>
+   <id>15</id>
+   <name>Creative Commons by-nc-nd</name>
+   <link>http://creativecommons.org/licenses/by-nc-nd/3.0/</link>
+  </license>
+
+  <license>
+   <id>14</id>
+   <name>Creative Commons by-nc-sa</name>
+   <link>http://creativecommons.org/licenses/by-nc-sa/3.0/</link>
+  </license>
+  <license>
+   <id>12</id>
+
+   <name>Creative Commons by-nd</name>
+   <link>http://creativecommons.org/licenses/by-nd/3.0/</link>
+  </license>
+  <license>
+   <id>11</id>
+   <name>Creative Commons by-sa</name>
+   <link>http://creativecommons.org/licenses/by-sa/3.0/</link>
+
+  </license>
+  <license>
+   <id>8</id>
+   <name>GFDL</name>
+   <link>http://www.gnu.org/copyleft/fdl.html</link>
+  </license>
+  <license>
+
+   <id>1</id>
+   <name>GPL</name>
+   <link>http://www.fsf.org/licenses/gpl.html</link>
+  </license>
+  <license>
+   <id>2</id>
+   <name>LGPL</name>
+
+   <link>http://www.fsf.org/licenses/lgpl.html</link>
+  </license>
+  <license>
+   <id>0</id>
+   <name>Other</name>
+   <link></link>
+  </license>
+
+  <license>
+   <id>7</id>
+   <name>Proprietary License</name>
+   <link></link>
+  </license>
+  <license>
+   <id>5</id>
+
+   <name>QPL</name>
+   <link>http://www.trolltech.com/licenses/qpl.html</link>
+  </license>
+  <license>
+   <id>4</id>
+   <name>X11</name>
+   <link>http://www.x.org/Downloads_terms.html</link>
+
+  </license>
+ </data>
+</ocs>
