@@ -80,13 +80,11 @@ function setupProviderOCS($provider)
 {
     global $common_basePath, $common_htmlPath;
     $path = "$common_htmlPath/$provider";
-    if (is_dir($path)) {
-        return;
+    if (!is_dir($path)) {
+        // in case it already existed as a file?
+        unlink($path);
+        mkdir($path);
     }
-
-    // in case it already existed as a file?
-    unlink($path);
-    mkdir($path);
 
     $staticFiles = Array('licenses', 'distributions', 'dependencies', 'homepages');
     foreach ($staticFiles as $file) {
