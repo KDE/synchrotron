@@ -27,12 +27,12 @@ if (isset($_SERVER['SERVER_NAME'])) {
 }
 
 // // BASE PATHS AND URLS
-global $common_baseURL, $common_htmlPath, $common_includePath;
+global $common_baseURL, $common_htmlPath, $common_includePath, $common_basePath;
 $common_baseURL = $common_siteHost . $common_sitePath;
-$basePath = '/home/aseigo/src/synchrotron';
+$common_basePath = '/home/aseigo/src/synchrotron';
 $common_repoPath = '/home/aseigo/src/testrepo';
-$common_htmlPath = $basePath . '/ocs';
-$common_includePath = $basePath . '/include';
+$common_htmlPath = $common_basePath . '/ocs';
+$common_includePath = $common_basePath . '/include';
 
 // DATABASE CONNECTION
 // global $db_hame, $db_host, $db_port, $db_username;
