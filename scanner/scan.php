@@ -88,8 +88,8 @@ function setupProviderOCS($provider)
     unlink($path);
     mkdir($path);
 
-    $files = Array('licenses');
-    foreach ($files as $file) {
+    $staticFiles = Array('licenses', 'dist');
+    foreach ($staticFiles as $file) {
         copy("$common_htmlPath/$file", "$path/$file");
     }
 }
