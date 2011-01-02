@@ -131,7 +131,7 @@ function processAssets($assets, $providers, $config)
             continue;
         }
 
-        processProviderAssets($providerAssets, $providerId, $config[$provider]);
+        processProviderAssets($providerAssets, $providers[$provider], $config[$provider]);
     }
 }
 
@@ -141,6 +141,8 @@ function processProviderAssets($assets, $providerId, $config)
     if (empty($metadataPath)) {
         $metadataPath = 'metadata.desktop';
     }
+
+    $db = db_connect();
 
     foreach ($assets as $asset => $path) {
         print("Processing $providerId $asset at $path\n");
@@ -152,12 +154,34 @@ function processProviderAssets($assets, $providerId, $config)
         $metadata = new INIFile("$path/$metadataPath");
         $plugin = $metadata->getValue('X-KDE-PluginInfo-Name', 'Desktop Entry');
 
-        if (empty($asset)) {
+        if (empty($plugin)) {
             print("No X-KDE-PluginInfo-Name entry in $contentPath/$metadataPath\n");
             continue;
         }
 
         print("Got $plugin\n");
+
+        //  id | provider | created | updated | downloads | version | author | homepage | preview | name | description
+        unset($where);
+        sql_addToWhereClause($where, '', 'provider', '=', $providerId);
+        sql_addToWhereClause($where, '', 'id', '=', $plugin);
+        $query = db_query($db, "select * from content where $where;");
+        if (db_numRows($query) > 0) {
+            print("gonna update\n");
+            // just update the field
+        } else {
+            // new asset!
+            unset($fields, $values);
+            sql_addIntToInsert($fields, $values, 'provider', $providerId);
+            sql_addScalarToInsert($fields, $values, 'id', $plugin);
+            sql_addScalarToInsert($fields, $values, 'version', $metadata->getValue('X-KDE-PluginInfo-Version', 'Desktop Entry'));
+            sql_addScalarToInsert($fields, $values, 'author', $metadata->getValue('X-KDE-PluginInfo-Author', 'Desktop Entry'));
+            sql_addScalarToInsert($fields, $values, 'homepage', $metadata->getValue('X-KDE-PluginInfo-Website', 'Desktop Entry'));
+            //FIXME: get preview image from asset dir! sql_addScalarToInsert($fields, $values, 'preview', <image path>);
+            sql_addScalarToInsert($fields, $values, 'name', $metadata->getValue('Name', 'Desktop Entry')); // FIXME: i18n
+            sql_addScalarToInsert($fields, $values, 'description', $metadata->getValue('Comment', 'Desktop Entry'));
+            db_insert($db, 'content', $fields, $values, 1);
+        }
     }
 }
 
