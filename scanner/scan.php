@@ -75,7 +75,7 @@ function providers($config)
     return $providers;
 }
 
-function findChangedAssets($config)
+function findChangedAssets($config, $providers)
 {
     global $common_repoPath;
     $assets = Array();
@@ -86,7 +86,7 @@ function findChangedAssets($config)
 
     exec('git pull');
     $db = db_connect();
-    $ts = db_query($db, "SELECT lastScan FROM scanning;");
+    $ts = db_query($db, "SELECT EXTRACT(EPOCH FROM DATE_TRUNC('second', lastscan)) FROM scanning;");
 
     // no scan! do it from scratch then...
     if (db_numRows($ts) < 1) {
@@ -118,8 +118,42 @@ function findChangedAssets($config)
         }
 
         $ts = db_query($db, "INSERT INTO scanning (lastScan) VALUES (CURRENT_TIMESTAMP);");
-        return $assets;
+    } else {
+        // get changes in the git repo since our last scan
+        db_query($db, "UPDATE scanning set lastScan = CURRENT_TIMESTAMP;");
+        list($ts) = db_row($ts, 0);
+        $log = Array();
+        exec("git log --since=$ts --pretty=format:\"\" --name-only", $log);
+
+        foreach ($config as $provider => $providerConfig) {
+            //print("Listing all assets for $provider\n");
+            $assets[$provider] = Array();
+        }
+
+        foreach ($log as $entry) {
+            if (empty($entry)) {
+                continue;
+            }
+
+            $pathParts = explode('/', $entry);
+            if (count($pathParts) < 2) {
+                // top level file, such as "providers", just skip
+                continue;
+            }
+
+            $provider = $pathParts[0];
+            if (!isset($providers[$provider])) {
+                continue;
+            }
+
+            $asset = $pathParts[1];
+            $path = "$common_repoPath/$provider/$asset";
+            $path = "$common_repoPath/$provider/$pathParts[1]";
+            $assets[$provider][$asset] = $path;
+        }
     }
+
+    return $assets;
 }
 
 function processAssets($assets, $providers, $config)
@@ -158,15 +192,12 @@ function processProviderAssets($assets, $providerId, $config)
             continue;
         }
 
-        print("Got $plugin\n");
-
         //  id | provider | created | updated | downloads | version | author | homepage | preview | name | description
         unset($where);
         sql_addToWhereClause($where, '', 'provider', '=', $providerId);
         sql_addToWhereClause($where, 'and', 'id', '=', $plugin);
-        $query = db_query($db, "select * from content where $where;", 1);
+        $query = db_query($db, "select * from content where $where;");
         if (db_numRows($query) > 0) {
-            print("gonna update\n");
             // just update the field
             unset($fields);
             sql_addScalarToUpdate($fields, 'version', $metadata->getValue('X-KDE-PluginInfo-Version', 'Desktop Entry'));
@@ -196,7 +227,6 @@ lock();
 
 $config = parse_ini_file($configFile, true);
 $providers = providers($config);
-print("booyah\n");
 $changedAssets = findChangedAssets($config, $providers);
 processAssets($changedAssets, $providers, $config);
 
