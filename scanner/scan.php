@@ -131,11 +131,11 @@ function processAssets($assets, $providers, $config)
             continue;
         }
 
-        processProviderAssets($providerId, $providerAssets, $config[$provider]);
+        processProviderAssets($providerAssets, $providerId, $config[$provider]);
     }
 }
 
-function processProviderAssets($providerId, $assets, $config)
+function processProviderAssets($assets, $providerId, $config)
 {
     $metadataPath = $config['metadata'];
     if (empty($metadataPath)) {
