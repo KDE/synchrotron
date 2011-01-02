@@ -1,0 +1,90 @@
+<?xml version="1.0"?>
+<ocs>
+ <meta>
+  <status>ok</status>
+  <statuscode>100</statuscode>
+  <message></message>
+  <totalitems>17</totalitems>
+ </meta>
+
+ <data>
+  <homepagetypes>
+   <id>0</id>
+   <name>&amp;nbsp;</name>
+  </homepagetypes>
+  <homepagetypes>
+   <id>10</id>
+
+   <name>Blog</name>
+  </homepagetypes>
+  <homepagetypes>
+   <id>20</id>
+   <name>Facebook</name>
+  </homepagetypes>
+  <homepagetypes>
+
+   <id>30</id>
+   <name>Forum</name>
+  </homepagetypes>
+  <homepagetypes>
+   <id>40</id>
+   <name>Homepage</name>
+  </homepagetypes>
+
+  <homepagetypes>
+   <id>50</id>
+   <name>Mailinglist</name>
+  </homepagetypes>
+  <homepagetypes>
+   <id>60</id>
+   <name>Twitter</name>
+
+  </homepagetypes>
+  <homepagetypes>
+   <id>70</id>
+   <name>Wiki</name>
+  </homepagetypes>
+  <homepagetypes>
+   <id>80</id>
+
+   <name>Wikipedia</name>
+  </homepagetypes>
+  <homepagetypes>
+   <id>90</id>
+   <name>identi.ca</name>
+  </homepagetypes>
+  <homepagetypes>
+
+   <id>100</id>
+   <name>last.fm</name>
+  </homepagetypes>
+  <homepagetypes>
+   <id>110</id>
+   <name>libre.fm</name>
+  </homepagetypes>
+
+  <homepagetypes>
+   <id>120</id>
+   <name>StackOverflow</name>
+  </homepagetypes>
+  <homepagetypes>
+   <id>130</id>
+   <name>Version Control</name>
+
+  </homepagetypes>
+  <homepagetypes>
+   <id>140</id>
+   <name>Issue Tacker</name>
+  </homepagetypes>
+  <homepagetypes>
+   <id>150</id>
+
+   <name>Screenshots</name>
+  </homepagetypes>
+  <homepagetypes>
+   <id>500</id>
+   <name>other</name>
+  </homepagetypes>
+ </data>
+
+</ocs>
