@@ -1,9 +1,10 @@
 General
 * i18n of user visible name and description in db; see include/i18n.php for some starting points
-* documentation for providers file
+* apache virtual server template
 
 Scanner
 * add tar+[gzip|bzip] compression
+* generate categories files per-provider
 
 OCS
 * list
