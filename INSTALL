@@ -6,7 +6,44 @@ Software needed:
 
 Install and Setup:
 * edit include config.php
-* cronjob for scanner/scan.php, must be able to write to ocs/ dir
+    * paths to synhcrotron
+    * path to source repository
+    * web URL root
+    * database connection information
+* scanner/scan.php
+    * must be able to write to ocs/ dir
+    * must be able to read source repository
 * http server for ocs dir, probably with some rewrite rules?
 
 Source Respository
+* the source repository needs to be readable by scanner/scan.php
+* the provider file in the root of the repository is an INI format file
+    * each group is a provider
+        * the name of the group becomes the name of the provider
+        * a directory by the same name must exist in the repository, this is
+          where all items for this provider are stored
+    * the following configuration params are understood and may appear as a
+      key/value pairing in a config group in the provider file:
+        * compression: can be one of zip or none; in the case of "none", the
+          first file in the content directory is simle copied over; support for
+          tgz and tbz are on the TODO (patches welcome :). Default is "none"
+        * metadata: the standard path to a .desktop file that contains the metadata
+          for the addon. This file should be of the sort compatible with KPluginInfo.
+          Default is "metadata.desktop"
+        * packageSuffix: the suffix to append to created add on packages, e.g. for
+          Plasmoids this is ".plasmoid"
+* for each provider, a directory matching the name of the group in the provider file
+  must exist. This is known as the "provider's content directory"
+* within each provider's content directory, each addon to be published via OCS should
+  appear in its own directory
+    * directories only need to be uniquely named within each provider; so multiple
+      providers can have addons with the same names, for instance. This is enforced
+      for us by the file system. (Obviously :)
+    * within each addon directory, a content/ directory must exist which contains the
+      actual addon itself. This can be compressed or uncompressed. For addons which
+      already provide a .desktop file for local usage, uncompressed is convenient as
+      it means that the .desktop file installed on the user's computer can be the same
+      one used by scan.php to generate the metadata for the OCS service.
+    * with each addon directory, an optional preview image can be included (currently
+      support for this is on the TODO, as are specifications for prefered image size
+      and format)
