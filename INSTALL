@@ -1,0 +1,12 @@
+Software needed:
+* postgresql
+* php
+    * Zip extension
+
+
+Install and Setup:
+* edit include config.php
+* cronjob for scanner/scan.php, must be able to write to ocs/ dir
+* http server for ocs dir, probably with some rewrite rules?
+
+Source Respository
