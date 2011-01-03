@@ -59,4 +59,24 @@ function i18n_dbOrderBy($default)
     return ' ORDER BY ' . $default;
 }
 
+function i18n_setLanguage($lang)
+{
+    global $common_language;
+    if ($lang == 'C') {
+        setcookie('synchrotronLanguage', '', 0, $auth_path);
+        unset($GLOBALS['common_language']);
+        unset($common_language);
+        unset($_COOKIE['synchrotronLanguage']);
+        return;
+    }
+
+    $db = db_connection();
+    sql_addToWhereClause($where, 'WHERE', 'code', '=', $lang);
+    $query = db_query($db, "select id from languages $where;");
+    if (db_numRows($query) > 0) {
+        list($common_language) = db_row($query, 0);
+        $common_language = intval($common_language);
+    }
+}
+
 ?>
