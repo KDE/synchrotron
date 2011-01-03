@@ -1,0 +1,12 @@
+General
+* i18n of user visible name and description in db; see include/i18n.php for some starting points
+* documentation for providers file
+
+Scanner
+* add tar+[gzip|bzip] compression
+
+OCS
+* list
+* get
+* download
+
