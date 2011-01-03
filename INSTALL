@@ -1,5 +1,17 @@
-Software needed:
+Synhrotron is a small web app that takes a git repository populated with application
+addons such as data packs, scripts, Plasmoids, etc. and automates the process of
+turning that repository, referred to as the "source repository", into an
+Open Collaboration Services compatible feed that can be used with, for instance,
+"Get Hot New Stuff" features in KDE applications.
+
+The addons should be platform independant and multiple sets of addons in the same git
+repository are supported. This allows one git repository to service the needs of
+multiple applications (or multiple kinds of addons for one application) and serve
+the entire user base of those addons.
+
+Software requirements:
 * postgresql
+* http server
 * php
     * Zip extension
 
