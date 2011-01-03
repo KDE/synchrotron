@@ -49,6 +49,7 @@ CREATE TABLE content
     preview     TEXT,
     name        TEXT        NOT NULL, -- FIXME: i18n
     description TEXT, -- FIXME: i18n
+    package     TEXT,
     CONSTRAINT content_pk PRIMARY KEY (id, provider)
 );
 
