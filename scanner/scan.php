@@ -204,9 +204,17 @@ function processAssets($assets, $providers, $config)
 
 function deleteAsset($providerId, $asset)
 {
+    global $common_htmlPath;
     sql_addToWhereClause($where, '', 'provider', '=', $providerId);
     sql_addToWhereClause($where, 'and', 'id', '=', $asset);
-    db_delete(db_connect(), 'content', $where);
+
+    $db = db_connect();
+    $query = db_query($db, "SELECT c.package, p.name  FROM content c LEFT JOIN providers p ON (c.provider = p.id) WHERE $where");
+    if (db_numRows($query) > 0) {
+        list($package, $provider) = db_row($query, 0);
+        unlink("$common_htmlPath/$provider/files/$package");
+        db_delete(db_connect(), 'content', $where);
+    }
 }
 
 function processProviderAssets($assets, $packageBasePath, $providerId, $config)
@@ -234,8 +242,8 @@ function processProviderAssets($assets, $packageBasePath, $providerId, $config)
             continue;
         }
 
-        $packagePath = createPackage($asset, $path, $packageBasePath, $config);
-        if (!$packagePath) {
+        $packageFile = createPackage($asset, $path, $packageBasePath, $config);
+        if (!$packageFile) {
             deleteAsset($providerId, $asset);
             continue;
         }
@@ -253,6 +261,7 @@ function processProviderAssets($assets, $packageBasePath, $providerId, $config)
             //FIXME: get preview image from asset dir! sql_addScalarToUpdate($fields, 'preview', <image path>);
             sql_addScalarToUpdate($fields, 'name', $metadata->getValue('Name', 'Desktop Entry')); // FIXME: i18n
             sql_addScalarToUpdate($fields, 'description', $metadata->getValue('Comment', 'Desktop Entry'));
+            sql_addScalarToUpdate($fields, 'package', $packageFile);
             db_update($db, 'content', $fields, $where);
         } else {
             // new asset!
@@ -265,6 +274,7 @@ function processProviderAssets($assets, $packageBasePath, $providerId, $config)
             //FIXME: get preview image from asset dir! sql_addScalarToInsert($fields, $values, 'preview', <image path>);
             sql_addScalarToInsert($fields, $values, 'name', $metadata->getValue('Name', 'Desktop Entry')); // FIXME: i18n
             sql_addScalarToInsert($fields, $values, 'description', $metadata->getValue('Comment', 'Desktop Entry'));
+            sql_addScalarToInsert($fields, $values, 'package', $packageFile);
             db_insert($db, 'content', $fields, $values);
         }
     }
@@ -297,12 +307,11 @@ function createPackage($asset, $source, $dest, $config)
         }
 
         // the first non-hidden file ... copy it!
-        $path= "$dest/${asset}_$entry";
-
-        print("copy $contentPath/$entry $path");
+        $packageFilename = "${asset}_$entry";
+        $path= "$dest/$packageFilename";
         copy("$contentPath/$entry", $path);
         closedir($dir);
-        return $path;
+        return $packageFilename;
     }
 
     $suffix = $config['packageSuffix'];
@@ -316,7 +325,8 @@ function createPackage($asset, $source, $dest, $config)
         }
     }
 
-    $packagePath = "$dest/$asset$suffix";
+    $packageFilename = "$asset$suffix";
+    $packagePath = "$dest/$packageFilename";
     unlink($packagePath);
 
     if ($compression == 'zip') {
@@ -352,7 +362,8 @@ function createPackage($asset, $source, $dest, $config)
         goto failure;
     }
 
-    return $packagePath;
+    closedir($dir);
+    return $packageFilename;
 
 failure:
     closedir($dir);
