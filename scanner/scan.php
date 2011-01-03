@@ -286,16 +286,21 @@ function createPackage($asset, $source, $dest, $config)
         while (false != ($entry = readdir($dir))) {
             if ($entry[0] == '.') {
                 continue;
+            } else {
+                break;
             }
         }
 
         if (!$entry) {
+            print("No entry $contentPath while doing the no-compression dance!\n");
             goto failure;
         }
 
         // the first non-hidden file ... copy it!
         $path= "$dest/${asset}_$entry";
-        copy("$source/content/$entry", $path);
+
+        print("copy $contentPath/$entry $path");
+        copy("$contentPath/$entry", $path);
         closedir($dir);
         return $path;
     }
