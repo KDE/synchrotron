@@ -70,41 +70,42 @@ function providers($config)
         }
 
         list($providers[$provider]) = db_row($result, 0);
-        setupProviderOCS($provider);
     }
 
     return $providers;
 }
 
-function setupProviderOCS($provider)
+function setupProviders($providers)
 {
     global $common_basePath, $common_htmlPath;
-    $path = "$common_htmlPath/$provider";
-    if (!is_dir($path)) {
-        // in case it already existed as a file?
-        unlink($path);
-        mkdir($path);
-    }
+    foreach ($providers as $provider => $providerId) {
+        $path = "$common_htmlPath/$provider";
+        if (!is_dir($path)) {
+            // in case it already existed as a file?
+            unlink($path);
+            mkdir($path);
+        }
 
-    mkdir("$path/files");
-    $staticFiles = Array('licenses', 'distributions', 'dependencies', 'homepages');
-    foreach ($staticFiles as $file) {
-        copy("$common_basePath/scanner/templates/$file", "$path/$file");
-    }
+        mkdir("$path/files");
+        $staticFiles = Array('licenses', 'distributions', 'dependencies', 'homepages');
+        foreach ($staticFiles as $file) {
+            copy("$common_basePath/scanner/templates/$file", "$path/$file");
+        }
 
-    $providerXml = "<providers>
-        <provider>
-         <id>opendesktop</id>
-          <location>$common_baseURL</location>
-           <name>KDE Synchrotron</name>
-           <icon></icon>
-           <services>
-           <content ocsversion=\"1.3\" />
-           </services>
-           </provider>
-        </providers>";
-    $providerFile = fopen("$path/provider.xml", 'w');
-    fwrite($providerFile, $providerXml);
+        $providerXml = "<providers>
+            <provider>
+            <id>opendesktop</id>
+            <location>$common_baseURL</location>
+            <name>KDE Synchrotron</name>
+            <icon></icon>
+            <services>
+            <content ocsversion=\"1.3\" />
+            </services>
+            </provider>
+            </providers>";
+        $providerFile = fopen("$path/provider.xml", 'w');
+        fwrite($providerFile, $providerXml);
+    }
 }
 
 // finds all entries that have changed in the git repository
@@ -124,6 +125,8 @@ function findChangedAssets($config, $providers)
     // no scan! do it from scratch then...
     if (db_numRows($ts) < 1) {
         //print("Fresh scan!\n");
+        setupProviders($providers);
+
         foreach ($config as $provider => $providerConfig) {
             //print("Listing all assets for $provider\n");
             $providerAssets = Array();
@@ -156,7 +159,7 @@ function findChangedAssets($config, $providers)
         list($ts) = db_row($ts, 0);
         $log = Array();
         exec("git log --since=$ts --pretty=format:\"\" --name-only", $log);
-        db_query($db, "UPDATE scanning set lastScan = CURRENT_TIMESTAMP;");
+//        db_query($db, "UPDATE scanning set lastScan = CURRENT_TIMESTAMP;");
 
         foreach ($config as $provider => $providerConfig) {
             //print("Listing all assets for $provider\n");
@@ -170,6 +173,9 @@ function findChangedAssets($config, $providers)
 
             $pathParts = explode('/', $entry);
             if (count($pathParts) < 2) {
+                if ($entry == 'providers') {
+                    setupProviders($providers);
+                }
                 // top level file, such as "providers", just skip
                 continue;
             }
