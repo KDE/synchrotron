@@ -86,6 +86,7 @@ function setupProviderOCS($provider)
         mkdir($path);
     }
 
+    mkdir("$path/files");
     $staticFiles = Array('licenses', 'distributions', 'dependencies', 'homepages');
     foreach ($staticFiles as $file) {
         copy("$common_basePath/scanner/templates/$file", "$path/$file");
@@ -190,17 +191,25 @@ function findChangedAssets($config, $providers)
 
 function processAssets($assets, $providers, $config)
 {
+    global $common_htmlPath;
     foreach ($assets as $provider => $providerAssets) {
         if (!isset($providers[$provider])) {
             print("Assets for $provider can not be processed due to missing provider id\n");
             continue;
         }
 
-        processProviderAssets($providerAssets, $providers[$provider], $config[$provider]);
+        processProviderAssets($providerAssets, "$common_htmlPath/$provider/files", $providers[$provider], $config[$provider]);
     }
 }
 
-function processProviderAssets($assets, $providerId, $config)
+function deleteAsset($providerId, $asset)
+{
+    sql_addToWhereClause($where, '', 'provider', '=', $providerId);
+    sql_addToWhereClause($where, 'and', 'id', '=', $asset);
+    db_delete(db_connect(), 'content', $where);
+}
+
+function processProviderAssets($assets, $packageBasePath, $providerId, $config)
 {
     $metadataPath = $config['metadata'];
     if (empty($metadataPath)) {
@@ -213,9 +222,7 @@ function processProviderAssets($assets, $providerId, $config)
         //print("Processing $providerId $asset at $path\n");
         if (!is_file("$path/$metadataPath")) {
             //print("No such thing as $path/$metadataPath, perhaps it was deleted?\n");
-            sql_addToWhereClause($where, '', 'provider', '=', $providerId);
-            sql_addToWhereClause($where, 'and', 'id', '=', $asset);
-            db_delete($db, 'content', $where);
+            deleteAsset($providerId, $asset);
             continue;
         }
 
@@ -227,7 +234,12 @@ function processProviderAssets($assets, $providerId, $config)
             continue;
         }
 
-        //  id | provider | created | updated | downloads | version | author | homepage | preview | name | description
+        $packagePath = createPackage($asset, $path, $packageBasePath, $config);
+        if (!$packagePath) {
+            deleteAsset($providerId, $asset);
+            continue;
+        }
+
         unset($where);
         sql_addToWhereClause($where, '', 'provider', '=', $providerId);
         sql_addToWhereClause($where, 'and', 'id', '=', $asset);
@@ -256,6 +268,121 @@ function processProviderAssets($assets, $providerId, $config)
             db_insert($db, 'content', $fields, $values);
         }
     }
+}
+
+function createPackage($asset, $source, $dest, $config)
+{
+    $compression = $config['compression'];
+    $contentPath = "$source/content";
+    $dir = opendir($contentPath);
+    if (!$dir) {
+        print("Could not open content directory in $source\n");
+        goto failure;
+    }
+
+
+    // the simple no-compression case: just copy over the first file in content/
+    if (empty($compression) || $compression == 'none') {
+        while (false != ($entry = readdir($dir))) {
+            if ($entry[0] == '.') {
+                continue;
+            }
+        }
+
+        if (!$entry) {
+            goto failure;
+        }
+
+        // the first non-hidden file ... copy it!
+        $path= "$dest/${asset}_$entry";
+        copy("$source/content/$entry", $path);
+        closedir($dir);
+        return $path;
+    }
+
+    $suffix = $config['packageSuffix'];
+    if (empty($suffix)) {
+        if ($compression == 'zip') {
+            $suffix = '.zip';
+        } else if ($compression == 'tgz') {
+            $suffix = '.tgz';
+        } else if ($compression == 'tbz') {
+            $suffix = '.tbz';
+        }
+    }
+
+    $packagePath = "$dest/$asset$suffix";
+    unlink($packagePath);
+
+    if ($compression == 'zip') {
+        $zip = new ZipArchive();
+        if (!$zip->open($packagePath, ZipArchive::CREATE)) {
+            print("Could not open zip file at $packagePath");
+            goto failure;
+        }
+
+        while (false != ($entry = readdir($dir))) {
+            if ($entry[0] == '.') {
+                continue;
+            }
+
+            if (!addToZip($zip, $contentPath, $entry)) {
+                $zip->close();
+                goto failure;
+            }
+        }
+
+        if (!$zip->close()) {
+            goto failure;
+        }
+    } else if ($compression == 'tgz') {
+        //FIXME: implement tar+gzip compression
+        goto failure;
+    } else if ($compression == 'tbz') {
+        //FIXME: implement tar+bzip compression
+        goto failure;
+    } else {
+        // unrecognized compression format
+        print("Compression format requested ($compression) for $asset is unknown");
+        goto failure;
+    }
+
+    return $packagePath;
+
+failure:
+    closedir($dir);
+    return false;
+}
+
+function addToZip($zip, $basePath, $file, $subPath = '')
+{
+    $path = empty($subPath) ? $file : "$subPath/$file";
+    $srcPath = "$basePath/$path";
+    //print("adding $file from $srcPath to $path\n");
+    if (is_file($srcPath)) {
+        if (!$zip->addFile($srcPath, $path)) {
+            print("Failed to add $path to $packagePath");
+            return false;
+        }
+    } else if (is_dir($srcPath)) {
+        $dir = opendir($srcPath);
+        if (!$dir) {
+            print("Could not open content directory in $entryPath\n");
+            return false;
+        }
+
+        while (false != ($entry = readdir($dir))) {
+            if ($entry == '.' || $entry == '..') {
+                continue;
+            }
+
+            if (!addToZip($zip, $basePath, $entry, $path)) {
+                return false;
+            }
+        }
+    }
+
+    return true;
 }
 
 lock();
