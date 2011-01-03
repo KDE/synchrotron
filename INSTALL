@@ -1,4 +1,4 @@
-Synhrotron is a small web app that takes a git repository populated with application
+Synchrotron is a small web app that takes a git repository populated with application
 addons such as data packs, scripts, Plasmoids, etc. and automates the process of
 turning that repository, referred to as the "source repository", into an
 Open Collaboration Services compatible feed that can be used with, for instance,
