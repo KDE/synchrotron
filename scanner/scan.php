@@ -168,7 +168,7 @@ function findChangedAssets($config, $providers)
         list($ts) = db_row($ts, 0);
         $log = Array();
         exec("git log --since=$ts --pretty=format:\"\" --name-only", $log);
-//        db_query($db, "UPDATE scanning set lastScan = CURRENT_TIMESTAMP;");
+        db_query($db, "UPDATE scanning set lastScan = CURRENT_TIMESTAMP;");
 
         foreach ($config as $provider => $providerConfig) {
             //print("Listing all assets for $provider\n");
