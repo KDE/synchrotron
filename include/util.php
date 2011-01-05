@@ -718,4 +718,13 @@ function phpErrorHandler($errno, $errmsg, $filename, $linenum, $vars)
 
 // automatically set the error handler to OURS!
 set_error_handler("phpErrorHandler");
+
+function canAccessApi($addr)
+{
+    unset($where);
+    $res = db_query(db_connect(), 'SELECT synchrotron_canAccessApi(\'' . addslashes($addr) . '\');');
+    list($res) = db_row($res, 0);
+    return db_boolean($res);
+}
+
 ?>
