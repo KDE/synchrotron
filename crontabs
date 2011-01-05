@@ -1,0 +1,7 @@
+as user with write access to synchrotron and read access to synchrotron-sources:
+
+15 * * * * cd <path>/synchrotron/scanner/; ./scan.php >/dev/null 2>&1
+
+as user with write privs to database:
+0 0 * * * * cd <path>/synchrotron/include/; ./dbmaint.php >/dev/null 2>&1
+
