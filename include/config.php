@@ -26,7 +26,7 @@ if (isset($_SERVER['SERVER_NAME'])) {
     $common_sitePath = '/';
 }
 
-// // BASE PATHS AND URLS
+// BASE PATHS AND URLS
 global $common_baseURL, $common_htmlPath, $common_includePath, $common_basePath;
 $common_baseURL = $common_siteHost . $common_sitePath;
 $common_basePath = '/home/aseigo/src/synchrotron';
@@ -45,7 +45,7 @@ $db_password = '';
 $db_localOnly = true;
 $db_singleDatabaseOnly = true;
 
-// // DB DEBUGGING
+// DB DEBUGGING
 global $db_errorMsg, $db_debug, $db_profile;
 $db_errorMsg = 1;
 $db_debug = 0;
