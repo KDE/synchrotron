@@ -276,6 +276,7 @@ function processProviderAssets($assets, $packageBasePath, $providerId, $config)
             //FIXME: get preview image from asset dir! sql_addScalarToUpdate($fields, 'preview', <image path>);
             sql_addScalarToUpdate($fields, 'name', $metadata->getValue('Name', 'Desktop Entry')); // FIXME: i18n
             sql_addScalarToUpdate($fields, 'description', $metadata->getValue('Comment', 'Desktop Entry'));
+            sql_addRawToUpdate($fields, 'updated', 'current_timestamp');
             sql_addScalarToUpdate($fields, 'package', $packageFile);
             db_update($db, 'content', $fields, $where);
         } else {
