@@ -39,7 +39,7 @@
 include_once('../include/config.php');
 include_once("$common_includePath/db.php");
 
-function printHeader($itemCount, $pagesize, $page = 0, $message = '')
+function printHeader($itemCount, $pagesize, $page = 0, $message = '', $status = 100)
 {
     print
 "<?xml version=\"1.0\"?>
@@ -47,7 +47,7 @@ function printHeader($itemCount, $pagesize, $page = 0, $message = '')
 <ocs>
 <meta>
     <status>ok</status>
-    <statuscode>100</statuscode>
+    <statuscode>$status</statuscode>
     <message>$message</message>
     <totalitems>$itemCount</totalitems>
     <page>$page</page>
@@ -95,6 +95,12 @@ function printFooter()
 </ocs>';
 }
 
+if (!canAccessApi($_SERVER['REMOTE_ADDR'])) {
+    printHeader(0, 0, 0, _("Too many requests from ${_SERVER['REMOTE_ADDR']}"), 200);
+    printFooter();
+    exit();
+}
+
 $pagesize = intval($_GET['pagesize']);
 $page = max(0, intval($_GET['page']));
 $searchTerm = $_GET['search'];
@@ -102,7 +108,7 @@ $sortMode = $_GET['sortmode'];
 
 $provider = $_GET['provider'];
 if (empty($provider)) {
-    printHeader(0, $pagesize, 1, _("Invalid provider"));
+    printHeader(0, $pagesize, 0, _("Invalid provider"));
     printFooter();
     exit();
 }

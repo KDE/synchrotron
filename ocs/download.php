@@ -60,6 +60,12 @@ function printFooter()
 </ocs>';
 }
 
+if (!canAccessApi($_SERVER['REMOTE_ADDR'])) {
+    printHeader(200, _("Too many requests from ${_SERVER['REMOTE_ADDR']}"));
+    printFooter();
+    exit();
+}
+
 $provider = $_GET['provider'];
 if (empty($provider)) {
     printHeader(101, _("Invalid provider"));
