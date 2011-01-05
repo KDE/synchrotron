@@ -86,7 +86,7 @@ unset($where);
 sql_addToWhereClause($where, '', 'p.name', '=', $provider);
 sql_addToWhereClause($where, 'and', 'c.id', '=', $contentId);
 
-$items = db_query($db, "SELECT c.package FROM content c LEFT JOIN providers p ON (c.provider = p.id) WHERE $where;", 1);
+$items = db_query($db, "SELECT c.package FROM content c LEFT JOIN providers p ON (c.provider = p.id) WHERE $where;");
 
 if (db_numrows($items) < 1) {
     printHeader(101, _("Content ID '$contentId' not fond"));
@@ -98,4 +98,9 @@ printHeader(100);
 list($package) = db_row($items, 0);
 printItem($package, $provider);
 printFooter();
+
+// record the request as a download
+unset($where);
+sql_addToWhereClause($where, '', 'id', '=', $contentId);
+db_query($db, "UPDATE content SET downloads = downloads + 1 WHERE $where;");
 ?>
