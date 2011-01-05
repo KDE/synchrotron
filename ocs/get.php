@@ -73,9 +73,6 @@ function printFooter()
 </ocs>';
 }
 
-$contentId = $_GET['contentid'];
-$sortMode = $_GET['sortmode'];
-
 $provider = $_GET['provider'];
 if (empty($provider)) {
     printHeader(200, _("Invalid provider"));
@@ -83,6 +80,7 @@ if (empty($provider)) {
     exit();
 }
 
+$contentId = $_GET['contentid'];
 if (empty($contentId)) {
     printHeader(200, _("Content ID not provided"));
     printFooter();
