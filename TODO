@@ -8,6 +8,9 @@ Scanner
 
 OCS
 * list
+    * add more fields to results
 * get
+    * add more fields to results
 * download
+    * add more fields to results, perhaps mimetype?
 
