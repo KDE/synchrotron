@@ -22,13 +22,13 @@
 include_once("$common_includePath/util.php");
 include_once("$common_includePath/sql.php");
 
-$pantheon_dbs = array();
+$synchrotron_dbs = array();
 
 $db_debugFrom = 0;
 $db_debugTo = 99999;
 $db_debugThreshold = 0;
 
-class PantheonDBConnection
+class SynchrotronDBConnection
 {
     var $identifier;
     var $db_host;
@@ -40,7 +40,7 @@ class PantheonDBConnection
     var $persistent;
     var $resource;
 
-    function PantheonDBConnection($identifier)
+    function SynchrotronDBConnection($identifier)
     {
         $this->identifier = $identifier;
         $this->localConnection = true;
@@ -50,7 +50,7 @@ class PantheonDBConnection
 
     function Copy($identifier, &$db)
     {
-        $copy = new PantheonDBConnection($identifier);
+        $copy = new SynchrotronDBConnection($identifier);
 
         //$this->identifier = $identifier;
         $copy->db_host = $db->db_host;
@@ -80,20 +80,20 @@ class PantheonDBConnection
 
 function db_register(&$db_connection)
 {
-    global $pantheon_dbs;
+    global $synchrotron_dbs;
 
-    if ($db_connection instanceof PantheonDBConnection)
+    if ($db_connection instanceof SynchrotronDBConnection)
     {
-        $pantheon_dbs[$db_connection->identifier] = $db_connection;    
+        $synchrotron_dbs[$db_connection->identifier] = $db_connection;
         return true;
     }
-    
+
     return false;
 }
 
 // REGISTER A DEFAULT DB
 global $db_localOnly;
-$defaultDB = new PantheonDBConnection('default');
+$defaultDB = new SynchrotronDBConnection('default');
 $defaultDB->db_host = $db_host;
 $defaultDB->db_port = $db_port;
 $defaultDB->db_name = $db_name;
@@ -111,16 +111,16 @@ db_register($defaultDB);
 
 function db_connection($identifier = 'default')
 {
-    global $pantheon_dbs;
+    global $synchrotron_dbs;
 
-    $db = $pantheon_dbs[$identifier];
-    
+    $db = $synchrotron_dbs[$identifier];
+
     if (!$db)
     {
-        $db = PantheonDBConnection::Copy($identifier, $pantheon_dbs['default']);
+        $db = SynchrotronDBConnection::Copy($identifier, $synchrotron_dbs['default']);
     }
 
-    if ($db instanceof PantheonDBConnection)
+    if ($db instanceof SynchrotronDBConnection)
     {
         if (!$db->resource)
         {
@@ -142,38 +142,16 @@ function db_connection($identifier = 'default')
 
 function db_close($identifier = 'default')
 {
-    global $pantheon_dbs;
+    global $synchrotron_dbs;
 
-    $db = $pantheon_dbs[$identifier];
+    $db = $synchrotron_dbs[$identifier];
 
-    if ($db instanceof PantheonDBConnection)
+    if ($db instanceof SynchrotronDBConnection)
     {
         return pg_close($db->resource);
     }
 
     return false;
-}
-
-/**
- * @deprecated
- */
-function db_connect($persistent = false, $new = false)
-{
-    global $pantheon_dbs;
-
-    $db = $pantheon_dbs['default'];
-
-    if ($db instanceof PantheonDBConnection)
-    {
-        $db->persistent = $persistent;
-
-        if ($new)
-        {
-            db_close('default');
-        }
-    }
-
-    return db_connection('default');
 }
 
 /*
