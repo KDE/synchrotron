@@ -721,6 +721,8 @@ set_error_handler("phpErrorHandler");
 
 function canAccessApi($addr)
 {
+    //uncomment the following line for debug purposes
+    //return true;
     unset($where);
     $res = db_query(db_connection(), 'SELECT synchrotron_canAccessApi(\'' . addslashes($addr) . '\');');
     list($res) = db_row($res, 0);
