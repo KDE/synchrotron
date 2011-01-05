@@ -61,3 +61,7 @@ CREATE TABLE accesses
 );
 create INDEX idx_accesses on accesses (address, ts);
 
+GRANT SELECT ON providers TO synchrotron_ro;
+GRANT SELECT ON content TO synchrotron_ro;
+GRANT INSERT,SELECT ON accesses TO synchrotron_ro;
+

@@ -18,3 +18,5 @@ BEGIN
 END;
 ' LANGUAGE 'PLPGSQL';
 
+GRANT EXECUTE ON FUNCTION synchrotron_canAccessApi(INET) TO synchrotron_ro;
+
