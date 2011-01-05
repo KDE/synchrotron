@@ -53,5 +53,11 @@ CREATE TABLE content
     CONSTRAINT content_pk PRIMARY KEY (id, provider)
 );
 
-
+-- DROP TABLE accesscounts;
+CREATE TABLE accesses
+(
+    address     INET        NOT NULL,
+    ts          TIMESTAMP   NOT NULL default CURRENT_TIMESTAMP
+);
+create INDEX idx_accesses on accesses (address, ts);
 
