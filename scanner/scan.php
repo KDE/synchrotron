@@ -87,10 +87,6 @@ function setupProviders($providers)
         }
 
         mkdir("$path/files");
-        $staticFiles = Array('licenses', 'distributions', 'dependencies', 'homepages');
-        foreach ($staticFiles as $file) {
-            copy("$common_basePath/scanner/templates/$file", "$path/$file");
-        }
 
         $providerXml = "<providers>
             <provider>
@@ -105,6 +101,19 @@ function setupProviders($providers)
             </providers>";
         $providerFile = fopen("$path/provider.xml", 'w');
         fwrite($providerFile, $providerXml);
+        fclose($providerFile);
+
+        $path .= '/v1';
+        if (!is_dir($path)) {
+            // in case it already existed as a file?
+            unlink($path);
+            mkdir($path);
+        }
+
+        $staticFiles = Array('licenses', 'distributions', 'dependencies', 'homepages');
+        foreach ($staticFiles as $file) {
+            copy("$common_basePath/scanner/templates/$file", "$path/$file");
+        }
     }
 }
 
