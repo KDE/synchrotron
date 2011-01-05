@@ -22,6 +22,8 @@ Install and Setup:
     * path to source repository
     * web URL root
     * database connection information
+* run sql/setupdb.sh as postgres superuser
+* add the crons in crontabs
 * scanner/scan.php
     * must be able to write to ocs/ dir
     * must be able to read source repository
