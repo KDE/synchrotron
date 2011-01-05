@@ -722,7 +722,7 @@ set_error_handler("phpErrorHandler");
 function canAccessApi($addr)
 {
     unset($where);
-    $res = db_query(db_connect(), 'SELECT synchrotron_canAccessApi(\'' . addslashes($addr) . '\');');
+    $res = db_query(db_connection(), 'SELECT synchrotron_canAccessApi(\'' . addslashes($addr) . '\');');
     list($res) = db_row($res, 0);
     return db_boolean($res);
 }
