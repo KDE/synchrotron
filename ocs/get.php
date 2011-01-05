@@ -18,20 +18,10 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-// Spec: http://freedesktop.org/wiki/Specifications/open-collaboration-services#list-1
+// Spec: http://freedesktop.org/wiki/Specifications/open-collaboration-services#get-4
 //
 // Supported parameters from the spec:
-//     search: the part of the name of the item you want to find.
-//     sortmode: The sortmode of the list. Possible values are: "new": newest first , "alpha": alphabetical, "high": highest rated, "down": most downloads
-//     page: The content page. You can control the size of a page with the pagesize argument. The first page is 0, the second is 1, ...
-//     pagesize: The amount of entries per page. 
-//
-// Unsupported parameters from the spec:
-//     categories
-//     user
-//     license
-//     external
-//     distribution
+//     contentid: Id of a content 
 //
 // Non-standard parameters:
 //     provider: the name of the provider to use in the database lookups
@@ -56,16 +46,7 @@ function printHeader($status = 100, $message = '')
 
 function printItem($id, $name, $version, $updated, $created, $type, $author, $homepage, $downloads, $preview)
 {
-    // fields not included:
-    //  language
-    //  score
-    //  preview1 (homepage for the preview)
-    //  profilepage (author homepage)
-    //  downloadname1
-    //  downloadsize1
-    //  downloadgpgsignature1
-    //  downloadgpgfingerprint1
-    print "    <content details=\"summary\">
+    print "    <content details=\"full\">
         <id>$id</id>
         <name>$name</name>
         <version>$version</version>
