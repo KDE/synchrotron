@@ -93,7 +93,7 @@ if (empty($contentId)) {
     exit();
 }
 
-$db = db_connect();
+$db = db_connection();
 
 unset($where);
 sql_addToWhereClause($where, '', 'p.name', '=', $provider);
