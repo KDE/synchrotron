@@ -23,6 +23,10 @@ include_once('../include/config.php');
 include_once("$common_includePath/db.php");
 include_once("$common_includePath/iniparser.php");
 
+$db = SynchrotronDBConnection::copy('write', $synchrotron_dbs['default']);
+$db->db_username = $db_writeusername;
+db_register($db);
+
 $configFile = "$common_repoPath/providers";
 $configFd = fopen($configFile, 'c');
 
@@ -50,7 +54,7 @@ function unlock()
 // returns an array of provider names to ID from the providers table in the databse
 function providers($config)
 {
-    $db = db_connect();
+    $db = db_connection('write');
     $providers = Array();
 
     foreach ($config as $provider => $providerConfig) {
@@ -128,7 +132,7 @@ function findChangedAssets($config, $providers)
     }
 
     exec('git pull');
-    $db = db_connect();
+    $db = db_connection('write');
     $ts = db_query($db, "SELECT EXTRACT(EPOCH FROM DATE_TRUNC('second', lastscan)) FROM scanning;");
 
     // no scan! do it from scratch then...
@@ -223,12 +227,12 @@ function deleteAsset($providerId, $asset)
     sql_addToWhereClause($where, '', 'provider', '=', $providerId);
     sql_addToWhereClause($where, 'and', 'id', '=', $asset);
 
-    $db = db_connect();
+    $db = db_connection('write');
     $query = db_query($db, "SELECT c.package, p.name  FROM content c LEFT JOIN providers p ON (c.provider = p.id) WHERE $where");
     if (db_numRows($query) > 0) {
         list($package, $provider) = db_row($query, 0);
         unlink("$common_htmlPath/$provider/files/$package");
-        db_delete(db_connect(), 'content', $where);
+        db_delete(db_connection('write'), 'content', $where);
     }
 }
 
@@ -239,7 +243,7 @@ function processProviderAssets($assets, $packageBasePath, $providerId, $config)
         $metadataPath = 'metadata.desktop';
     }
 
-    $db = db_connect();
+    $db = db_connection('write');
 
     foreach ($assets as $asset => $path) {
         //print("Processing $providerId $asset at $path\n");
