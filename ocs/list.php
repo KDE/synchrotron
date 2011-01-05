@@ -42,7 +42,8 @@ include_once("$common_includePath/db.php");
 function printHeader($itemCount, $pagesize, $page = 0, $message = '')
 {
     print
-"
+"<?xml version=\"1.0\"?>
+
 <ocs>
 <meta>
     <status>ok</status>
@@ -52,10 +53,11 @@ function printHeader($itemCount, $pagesize, $page = 0, $message = '')
     <page>$page</page>
     <itemsperpage>$pagesize</itemsperpage>
 </meta>
-<data>";
+<data>
+";
 }
 
-function printItem($id, $name, $version, $changed, $created, $type, $author, $homepage, $downloads)
+function printItem($id, $name, $version, $updated, $created, $type, $author, $homepage, $downloads, $preview)
 {
     // fields not included:
     //  language
@@ -66,29 +68,31 @@ function printItem($id, $name, $version, $changed, $created, $type, $author, $ho
     //  downloadsize1
     //  downloadgpgsignature1
     //  downloadgpgfingerprint1
-    print "<content details=\"summary\">
-    <id>$id</id>
-    <name>$name</name>
-    <version>$version</version>
-    <changed>2007-11-24T22:41:08+01:00</changed>
-    <created>2007-11-01T22:28:24+01:00</created>
-    <typeid>$type</typeid>
-    <typename></typename>
-    <personid>$author</personid>
-    <detailpage>$homepage</detailpage>
-    <downloads>$downloads</downloads>
-    ";
+    print "    <content details=\"summary\">
+        <id>$id</id>
+        <name>$name</name>
+        <version>$version</version>
+        <changed>$updated</changed>
+        <created>$created</created>
+        <typeid>$type</typeid>
+        <typename></typename>
+        <personid>$author</personid>
+        <detailpage>$homepage</detailpage>
+        <downloads>$downloads</downloads>
+";
 
     if (!empty($preview)) {
         print "\n<previewpic1>$preview</previewpic1>\n";
     }
 
-    print "</content>";
+    print "     </content>";
 }
 
 function printFooter()
 {
-    print '</data></ocs>';
+    print '
+</data>
+</ocs>';
 }
 
 $pagesize = intval($_GET['pagesize']);
@@ -103,13 +107,12 @@ if (empty($provider)) {
     exit();
 }
 
-print("provider is $provider, $sortMode<br>");
 $db = db_connect();
 
 unset($where);
 sql_addToWhereClause($where, '', 'p.name', '=', $provider);
 
-list($totalItemCount) = db_row(db_query($db, "SELECT count(c.id) FROM content c LEFT JOIN providers p ON (c.provider = p.id) WHERE $where;", 1), 0);
+list($totalItemCount) = db_row(db_query($db, "SELECT count(c.id) FROM content c LEFT JOIN providers p ON (c.provider = p.id) WHERE $where;"), 0);
 if ($totalItemCount < 1) {
     printHeader(0, $pagesize);
     printFooter();
@@ -137,13 +140,13 @@ if (empty($sortMode) || $sortMode == 'new') {
     ratings are not supported
 } */
 
-$items = db_query($db, "SELECT c.id FROM content c LEFT JOIN providers p ON (c.provider = p.id) WHERE $where $orderBy $limit $offset;", 1);
+$items = db_query($db, "SELECT c.id, c.name, c.version, date_trunc('second', c.updated), date_trunc('second', c.created), c.author, c.homepage, c.downloads, c.preview FROM content c LEFT JOIN providers p ON (c.provider = p.id) WHERE $where $orderBy $limit $offset;");
 
 printHeader($totalItemCount, $pagesize, $page);
 $itemCount = db_numRows($items);
 for ($i = 0; $i < $itemCount; ++$i) {
-    list($id) = db_row($items, $i);
-    printItem($id);
+    list($id, $name, $version, $updated, $created, $author, $homepage, $downloads, $preview) = db_row($items, $i);
+    printItem($id, $name, $version, $updated, $created, '' /* type */, $author, $homepage, $downloads, $preview);
 }
 printFooter();
 ?>
