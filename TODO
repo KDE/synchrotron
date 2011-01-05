@@ -7,10 +7,10 @@ Scanner
 * generate categories files per-provider
 
 OCS
-* list
-    * add more fields to results
-* get
-    * add more fields to results
-* download
+* list.php
+    * add more fields to results?
+* get.php
+    * add more fields to results?
+* download.php
     * add more fields to results, perhaps mimetype?
 
