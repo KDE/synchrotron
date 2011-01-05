@@ -79,7 +79,7 @@ function printItem($id, $name, $version, $changed, $created, $type, $author, $ho
     <downloads>$downloads</downloads>
     ";
 
-    if (!empty($preview) {
+    if (!empty($preview)) {
         print "\n<previewpic1>$preview</previewpic1>\n";
     }
 
@@ -91,10 +91,10 @@ function printFooter()
     print '</data></ocs>';
 }
 
-$pagesize = intval($_GET('pagesize'));
-$page = max(0, intval($_GET('page')));
-$searchTerm = $_GET('search');
-$sortMode = $_GET('sortmode');
+$pagesize = intval($_GET['pagesize']);
+$page = max(0, intval($_GET['page']));
+$searchTerm = $_GET['search'];
+$sortMode = $_GET['sortmode'];
 
 $provider = $_GET['provider'];
 if (empty($provider)) {
@@ -103,12 +103,13 @@ if (empty($provider)) {
     exit();
 }
 
+print("provider is $provider, $sortMode<br>");
 $db = db_connect();
 
 unset($where);
 sql_addToWhereClause($where, '', 'p.name', '=', $provider);
 
-list($totalItemCount) = db_row(db_query($db, "SELECT count(id) FROM content c LEFT JOIN providers p ON (c.provider = p.id) WHERE $where;"), 0);
+list($totalItemCount) = db_row(db_query($db, "SELECT count(c.id) FROM content c LEFT JOIN providers p ON (c.provider = p.id) WHERE $where;", 1), 0);
 if ($totalItemCount < 1) {
     printHeader(0, $pagesize);
     printFooter();
@@ -125,23 +126,23 @@ if ($page > 0) {
     $offset = 'OFFSET ' . $page * $pagesize;
 }
 
-unset($sortBy);
+unset($orderBy);
 if (empty($sortMode) || $sortMode == 'new') {
-    $sortBy = 'ORDER BY c.updated DESC';
+    $orderBy = 'ORDER BY c.updated DESC';
 } else if ($sortMode == 'alpha') {
-    $sortBy = 'ORDER BY c.name'; // FIXME: i18n
+    $orderBy = 'ORDER BY c.name'; // FIXME: i18n
 } else if ($sortMode == 'down') {
-    $sortBy = 'ORDER BY c.downloads DESC';
+    $orderBy = 'ORDER BY c.downloads DESC';
 } /* else if ($sortMode == 'high') {
     ratings are not supported
 } */
 
-$items = db_query($db, "SELECT id FROM content c LEFT JOIN providers p ON (c.provider = p.id) WHERE $where $orderBy $limit $offset;");
+$items = db_query($db, "SELECT c.id FROM content c LEFT JOIN providers p ON (c.provider = p.id) WHERE $where $orderBy $limit $offset;", 1);
 
 printHeader($totalItemCount, $pagesize, $page);
 $itemCount = db_numRows($items);
 for ($i = 0; $i < $itemCount; ++$i) {
-    list($id) = dbRow($items, $i);
+    list($id) = db_row($items, $i);
     printItem($id);
 }
 printFooter();
