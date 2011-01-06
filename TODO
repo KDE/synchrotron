@@ -1,7 +1,13 @@
 General
-* i18n of user visible name and description in db; see include/i18n.php for some starting points
-* make download counts actually based on downloads, not just accesses via download.php
-* allow multiple source repositories so addons can be split up amongst different repos
+* i18n of user visible name and description in db; see include/i18n.php for some
+  starting points
+* make download counts actually based on downloads, not just accesses via
+  download.php
+* allow multiple source repositories so addons can be split up amongst different
+  repos
+* add "depends" support; this requires something in the metadata files, creating
+  per-provider depends files when scan.php is run, adding depends fields to the
+  output of list.php / get.php and accepting depends as a search filter
 
 Scanner
 * add tar+[gzip|bzip] compression
