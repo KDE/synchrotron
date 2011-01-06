@@ -1,6 +1,7 @@
 General
 * i18n of user visible name and description in db; see include/i18n.php for some starting points
 * make download counts actually based on downloads, not just accesses via download.php
+* allow multiple source repositories so addons can be split up amongst different repos
 
 Scanner
 * add tar+[gzip|bzip] compression
