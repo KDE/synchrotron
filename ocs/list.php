@@ -35,6 +35,8 @@
 //
 // Non-standard parameters:
 //     provider: the name of the provider to use in the database lookups
+//     updatedsince: a timestamp to limit the results by
+//     createdsince: a timestamp to limit the results by
 
 include_once('../include/config.php');
 include_once("$common_includePath/db.php");
@@ -117,6 +119,16 @@ $db = db_connection();
 
 unset($where);
 sql_addToWhereClause($where, '', 'p.name', '=', $provider);
+
+$updatedSince = intval($_GET['updatedsince']);
+if ($updatedSince > 0) {
+    sql_addToWhereClause($where, 'and', "extract('epoch' from c.updated)", '>=', $updatedSince);
+}
+
+$createdSince = intval($_GET['createdsince']);
+if ($createdsince > 0) {
+    sql_addToWhereClause($where, 'and', "extract('epoch' from c.created)", '>=', $createdSince);
+}
 
 list($totalItemCount) = db_row(db_query($db, "SELECT count(c.id) FROM content c LEFT JOIN providers p ON (c.provider = p.id) WHERE $where;"), 0);
 if ($totalItemCount < 1) {
