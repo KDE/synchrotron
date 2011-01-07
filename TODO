@@ -13,6 +13,7 @@ Scanner
 * add tar+[gzip|bzip] compression
 * generate categories files per-provider
 * any need for other formats for metadata, besides KPluginInfo-style .desktop files?
+* use PluginInfo-Name= field for the addon id and package name
 
 OCS
 * add json support? not sure if it is even useful, but some might prefer it...
