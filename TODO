@@ -14,11 +14,13 @@ Scanner
 * generate categories files per-provider
 * any need for other formats for metadata, besides KPluginInfo-style .desktop files?
 * use PluginInfo-Name= field for the addon id and package name
+* store all dates and times in UTC
 
 OCS
 * add json support? not sure if it is even useful, but some might prefer it...
 * list.php
     * add more fields to results?
+    * make updatedsince and createdsince work with UTC dates
 * get.php
     * add more fields to results?
 * download.php
