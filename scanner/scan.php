@@ -261,7 +261,7 @@ function processProviderAssets($assets, $packageBasePath, $providerId, $config)
             continue;
         }
 
-        $packageFile = createPackage($asset, $path, $packageBasePath, $config);
+        $packageFile = createPackage($plugin, $path, $packageBasePath, $config);
         if (!$packageFile) {
             deleteAsset($providerId, $asset);
             continue;
@@ -269,7 +269,7 @@ function processProviderAssets($assets, $packageBasePath, $providerId, $config)
 
         unset($where);
         sql_addToWhereClause($where, '', 'provider', '=', $providerId);
-        sql_addToWhereClause($where, 'and', 'id', '=', $asset);
+        sql_addToWhereClause($where, 'and', 'id', '=', $plugin);
         $query = db_query($db, "select * from content where $where;");
         if (db_numRows($query) > 0) {
             // just update the field
@@ -287,7 +287,7 @@ function processProviderAssets($assets, $packageBasePath, $providerId, $config)
             // new asset!
             unset($fields, $values);
             sql_addIntToInsert($fields, $values, 'provider', $providerId);
-            sql_addScalarToInsert($fields, $values, 'id', $asset);
+            sql_addScalarToInsert($fields, $values, 'id', $plugin);
             sql_addScalarToInsert($fields, $values, 'version', $metadata->getValue('X-KDE-PluginInfo-Version', 'Desktop Entry'));
             sql_addScalarToInsert($fields, $values, 'author', $metadata->getValue('X-KDE-PluginInfo-Author', 'Desktop Entry'));
             sql_addScalarToInsert($fields, $values, 'homepage', $metadata->getValue('X-KDE-PluginInfo-Website', 'Desktop Entry'));

@@ -13,7 +13,6 @@ Scanner
 * add tar+[gzip|bzip] compression
 * generate categories files per-provider
 * any need for other formats for metadata, besides KPluginInfo-style .desktop files?
-* use PluginInfo-Name= field for the addon id and package name
 * store all dates and times in UTC
 
 OCS
