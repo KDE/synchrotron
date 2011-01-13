@@ -261,7 +261,11 @@ function processProviderAssets($assets, $packageBasePath, $providerId, $config)
             continue;
         }
 
-        $packageFile = createPackage($plugin, $path, $packageBasePath, $config);
+        $packageFile = $metadata->getValue('X-Synchrotron-ContentUrl', 'Desktop Entry');
+        if (empty($packageFile)) {
+            $packageFile = createPackage($plugin, $path, $packageBasePath, $config);
+        }
+
         if (!$packageFile) {
             deleteAsset($providerId, $asset);
             continue;
