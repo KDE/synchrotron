@@ -103,7 +103,7 @@ function setupProviders($providers)
             </services>
             </provider>
             </providers>";
-        $providerFile = fopen("$path/provider.xml", 'w');
+        $providerFile = fopen("$path/providers.xml", 'w');
         fwrite($providerFile, $providerXml);
         fclose($providerFile);
 
