@@ -94,7 +94,7 @@ function setupProviders($providers)
 
         $providerXml = "<providers>
             <provider>
-            <id>opendesktop</id>
+            <id>synchrotron</id>
             <location>$common_baseURL</location>
             <name>KDE Synchrotron</name>
             <icon></icon>
