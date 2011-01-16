@@ -81,7 +81,7 @@ function providers($config)
 
 function setupProviders($providers)
 {
-    global $common_basePath, $common_htmlPath;
+    global $common_basePath, $common_htmlPath, $common_baseURL;
     foreach ($providers as $provider => $providerId) {
         $path = "$common_htmlPath/$provider";
         if (!is_dir($path)) {

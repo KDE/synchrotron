@@ -21,10 +21,8 @@
 
 // MAIN CONFIGURATION
 global $common_siteHost, $common_sitePath;
-if (isset($_SERVER['SERVER_NAME'])) {
-    $common_siteHost = 'http://' . $_SERVER['SERVER_NAME'];
-    $common_sitePath = '/';
-}
+$common_siteHost = 'http://synchrotron';
+$common_sitePath = '/';
 
 // BASE PATHS AND URLS
 global $common_baseURL, $common_htmlPath, $common_includePath, $common_basePath;
