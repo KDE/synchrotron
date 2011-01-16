@@ -309,9 +309,11 @@ function createPackage($asset, $source, $dest, $config)
     $compression = $config['compression'];
     $contentPath = "$source/content";
     $dir = opendir($contentPath);
+
     if (!$dir) {
         print("Could not open content directory in $source\n");
-        goto failure;
+        closedir($dir);
+        return false;
     }
 
 
@@ -327,7 +329,8 @@ function createPackage($asset, $source, $dest, $config)
 
         if (!$entry) {
             print("No entry $contentPath while doing the no-compression dance!\n");
-            goto failure;
+            closedir($dir);
+            return false;
         }
 
         // the first non-hidden file ... copy it!
@@ -357,7 +360,8 @@ function createPackage($asset, $source, $dest, $config)
         $zip = new ZipArchive();
         if (!$zip->open($packagePath, ZipArchive::CREATE)) {
             print("Could not open zip file at $packagePath");
-            goto failure;
+            closedir($dir);
+            return false;
         }
 
         while (false != ($entry = readdir($dir))) {
@@ -367,31 +371,32 @@ function createPackage($asset, $source, $dest, $config)
 
             if (!addToZip($zip, $contentPath, $entry)) {
                 $zip->close();
-                goto failure;
+                closedir($dir);
+                return false;
             }
         }
 
         if (!$zip->close()) {
-            goto failure;
+            closedir($dir);
+            return false;
         }
     } else if ($compression == 'tgz') {
         //FIXME: implement tar+gzip compression
-        goto failure;
+        closedir($dir);
+        return false;
     } else if ($compression == 'tbz') {
         //FIXME: implement tar+bzip compression
-        goto failure;
+        closedir($dir);
+        return false;
     } else {
         // unrecognized compression format
         print("Compression format requested ($compression) for $asset is unknown");
-        goto failure;
+        closedir($dir);
+        return false;
     }
 
     closedir($dir);
     return $packageFilename;
-
-failure:
-    closedir($dir);
-    return false;
 }
 
 function addToZip($zip, $basePath, $file, $subPath = '')
