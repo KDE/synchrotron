@@ -28,7 +28,7 @@ $db->db_username = $db_writeusername;
 db_register($db);
 
 $configFile = "$common_repoPath/providers";
-$configFd = fopen($configFile, 'c');
+$configFd = fopen($configFile, 'r');
 
 // tries to get a file lock on the providers config
 // on failure, we exit on the assumption another scan is running
