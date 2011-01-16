@@ -29,8 +29,8 @@ if (isset($_SERVER['SERVER_NAME'])) {
 // BASE PATHS AND URLS
 global $common_baseURL, $common_htmlPath, $common_includePath, $common_basePath;
 $common_baseURL = $common_siteHost . $common_sitePath;
-$common_basePath = '/home/aseigo/src/synchrotron';
-$common_repoPath = '/home/aseigo/src/testrepo';
+$common_basePath = '/home/aseigo/synchrotron';
+$common_repoPath = '/home/aseigo/synchrotron-sources';
 $common_htmlPath = $common_basePath . '/ocs';
 $common_includePath = $common_basePath . '/include';
 
