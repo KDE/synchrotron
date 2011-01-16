@@ -13,7 +13,9 @@ Scanner
 * add tar+[gzip|bzip] compression
 * generate categories files per-provider
 * any need for other formats for metadata, besides KPluginInfo-style .desktop files?
-* store all dates and times in UTC
+* check that all dates and times are stored in UTC
+* allow cusomtization of the providers.xml file; others may not want "KDE Synchrotron"
+  as the name, after all ;) should probably be in the config file
 
 OCS
 * add json support? not sure if it is even useful, but some might prefer it...
