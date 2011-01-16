@@ -257,7 +257,7 @@ function processProviderAssets($assets, $packageBasePath, $providerId, $config)
         $plugin = $metadata->getValue('X-KDE-PluginInfo-Name', 'Desktop Entry');
 
         if (empty($plugin)) {
-            print("No X-KDE-PluginInfo-Name entry in $contentPath/$metadataPath\n");
+            print("No X-KDE-PluginInfo-Name entry in $path/$metadataPath\n");
             continue;
         }
 
