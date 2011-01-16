@@ -95,7 +95,7 @@ function setupProviders($providers)
         $providerXml = "<providers>
             <provider>
             <id>synchrotron</id>
-            <location>$common_baseURL</location>
+            <location>$common_baseURL/$provider</location>
             <name>KDE Synchrotron</name>
             <icon></icon>
             <services>
