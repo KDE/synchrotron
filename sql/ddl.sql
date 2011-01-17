@@ -59,6 +59,7 @@ CREATE TABLE content
     name        TEXT        NOT NULL, -- FIXME: i18n
     description TEXT, -- FIXME: i18n
     package     TEXT,
+    externalPackage     BOOL    NOT NULL DEFAULT FALSE,
     CONSTRAINT content_pk PRIMARY KEY (id, provider)
 );
 
