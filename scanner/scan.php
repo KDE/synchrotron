@@ -118,7 +118,48 @@ function setupProviders($providers)
         foreach ($staticFiles as $file) {
             copy("$common_basePath/scanner/templates/$file", "$path/$file");
         }
+
+        createCategoriesFile($provider);
     }
+}
+
+function createCategoriesFile($provider)
+{
+    global $common_htmlPath;
+    $path = "$common_htmlPath/$provider/v1/categories";
+
+    $fd = fopen($path, 'w');
+    if (!$fd) {
+        print("Could not create categories file at $path for $provider!\n");
+        return;
+    }
+
+    $headerXml = '
+<ocs>
+    <meta>
+        <status>ok</status>
+        <statuscode>100</statuscode>
+        <message></message>
+        <totalitems>4</totalitems>
+    </meta>
+<data>
+';
+
+    fwrite($fd, $headerXml);
+
+    $db = db_connection('write');
+    unset($where);
+    sql_addToWhereClause($where, '', 'p.name', '=', $provider);
+    $query = db_query($db, "SELECT c.id, c.name FROM categories c LEFT JOIN providers p ON (c.provider = p.id) WHERE $where");
+    $numResults = db_numrows($query);
+
+    for ($i = 0; $i < $numResults; ++$i) {
+        list($id, $name) = db_row($query, $i);
+        fwrite($fd, "<category><id>$id</id><name>$name</name></category>\n");
+    }
+
+    fwrite($fd, '</data></ocs>');
+    fclose($fd);
 }
 
 // finds all entries that have changed in the git repository
@@ -217,7 +258,7 @@ function processAssets($assets, $providers, $config)
             continue;
         }
 
-        processProviderAssets($providerAssets, "$common_htmlPath/$provider/files", $providers[$provider], $config[$provider]);
+        processProviderAssets($providerAssets, "$common_htmlPath/$provider/files", $provider, $providers[$provider], $config[$provider]);
     }
 }
 
@@ -236,13 +277,15 @@ function deleteAsset($providerId, $asset)
     }
 }
 
-function processProviderAssets($assets, $packageBasePath, $providerId, $config)
+function processProviderAssets($assets, $packageBasePath, $provider, $providerId, $config)
 {
     $metadataPath = $config['metadata'];
     if (empty($metadataPath)) {
         $metadataPath = 'metadata.desktop';
     }
 
+    $recreateCategoriesFile = false;
+    $categories = Array();
     $db = db_connection('write');
 
     foreach ($assets as $asset => $path) {
@@ -271,6 +314,31 @@ function processProviderAssets($assets, $packageBasePath, $providerId, $config)
             continue;
         }
 
+        $category = $metadata->getValue('X-KDE-PluginInfo-Category', 'Desktop Entry');
+        if (empty($category)) {
+            $category = 'Miscelaneous';
+        }
+
+        if (isset($categories[$category])) {
+            $categoryId = $categories[$category];
+        } else {
+            unset($where);
+            sql_addToWhereClause($where, '', 'provider', '=', $providerId);
+            sql_addToWhereClause($where, 'and', 'name', 'ILIKE', $category);
+            $query = db_query($db, "SELECT id FROM categories WHERE $where");
+            if (db_numRows($query) < 1) {
+                unset($fields, $values);
+                sql_addIntToInsert($fields, $values, 'provider', $providerId);
+                sql_addScalarToInsert($fields, $values, 'name', $category);
+                db_insert($db, 'categories', $fields, $values);
+                $query = db_query($db, "SELECT id FROM categories WHERE $where");
+                $recreateCategoriesFile = true;
+            }
+
+            list($categoryId) = db_row($query, 0);
+            $categories[$category] = $categoryId;
+        }
+
         unset($where);
         sql_addToWhereClause($where, '', 'provider', '=', $providerId);
         sql_addToWhereClause($where, 'and', 'id', '=', $plugin);
@@ -284,6 +352,7 @@ function processProviderAssets($assets, $packageBasePath, $providerId, $config)
             //FIXME: get preview image from asset dir! sql_addScalarToUpdate($fields, 'preview', <image path>);
             sql_addScalarToUpdate($fields, 'name', $metadata->getValue('Name', 'Desktop Entry')); // FIXME: i18n
             sql_addScalarToUpdate($fields, 'description', $metadata->getValue('Comment', 'Desktop Entry'));
+            sql_addIntToUpdate($fields, 'category', $categoryId);
             sql_addRawToUpdate($fields, 'updated', 'current_timestamp');
             sql_addScalarToUpdate($fields, 'package', $packageFile);
             db_update($db, 'content', $fields, $where);
@@ -298,9 +367,14 @@ function processProviderAssets($assets, $packageBasePath, $providerId, $config)
             //FIXME: get preview image from asset dir! sql_addScalarToInsert($fields, $values, 'preview', <image path>);
             sql_addScalarToInsert($fields, $values, 'name', $metadata->getValue('Name', 'Desktop Entry')); // FIXME: i18n
             sql_addScalarToInsert($fields, $values, 'description', $metadata->getValue('Comment', 'Desktop Entry'));
+            sql_addIntToInsert($fields, $values, 'category', $categoryId);
             sql_addScalarToInsert($fields, $values, 'package', $packageFile);
             db_insert($db, 'content', $fields, $values);
         }
+    }
+
+    if ($recreateCategoriesFile) {
+        createCategoriesFile($provider);
     }
 }
 
