@@ -32,6 +32,14 @@ CREATE TABLE providers
     typename    TEXT        -- FIXME: i18n
 );
 
+-- DROP TABLE categories
+CREATE TABLE categories
+(
+    id          INT         PRIMARY KEY DEFAULT nextval('seq_providerIds'),
+    provider    INT         NOT NULL REFERENCES providers(id) ON DELETE CASCADE,
+    name        TEXT        NOT NULL -- FIXME: i18n
+);
+
 -- drop sequence seq_contentIds;
 CREATE SEQUENCE seq_contentIds;
 
@@ -40,6 +48,7 @@ CREATE TABLE content
 (
     id          TEXT        NOT NULL,
     provider    INT         NOT NULL REFERENCES providers(id) ON DELETE CASCADE,
+    category    INT         NOT NULL REFERENCES providers(id) ON DELETE SET NULL,
     created     TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated     TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
     downloads   INT         NOT NULL DEFAULT 0,
