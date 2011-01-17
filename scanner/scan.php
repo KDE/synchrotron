@@ -141,7 +141,7 @@ function createCategoriesFile($provider)
         return;
     }
 
-    $headerXml = '
+    $headerXml = '<?xml version="1.0"?>
 <ocs>
     <meta>
         <status>ok</status>
