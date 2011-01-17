@@ -75,16 +75,13 @@ if (empty($provider)) {
 
 $contentId = $_GET['contentid'];
 if (empty($contentId)) {
-    // the spec is rather unclear on this .. but whatever.
-    $contentId = $_GET['itemid'];
-
-    if (empty($contentId)) {
-        printHeader(101, _("Content ID not provided"));
-        printFooter();
-        exit();
-    }
+    printHeader(101, _("Content ID not provided"));
+    printFooter();
+    exit();
 }
 
+// we don't care about the item id, really, because we only ever have one
+// //$itemId = $_GET['itemid'];
 
 $db = db_connection();
 
