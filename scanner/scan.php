@@ -107,7 +107,7 @@ function setupProviders($providers)
         fwrite($providerFile, $providerXml);
         fclose($providerFile);
 
-        $path .= '/v1';
+        $path .= '/v1/content';
         if (!is_dir($path)) {
             // in case it already existed as a file?
             unlink($path);
@@ -126,7 +126,7 @@ function setupProviders($providers)
 function createCategoriesFile($provider)
 {
     global $common_htmlPath;
-    $path = "$common_htmlPath/$provider/v1/categories";
+    $path = "$common_htmlPath/$provider/v1/content/categories";
 
     $fd = fopen($path, 'w');
     if (!$fd) {
