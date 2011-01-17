@@ -91,9 +91,9 @@ if (db_numrows($items) < 1) {
 
 printHeader(100);
 list($package, $external) = db_row($items, 0);
-if (db_bool($external)) {
+if (db_boolean($external)) {
     $url = $package;
-else ($url) {
+} else {
     $url = "common_baseURL/$provider/files/$package";
 }
 print "    <content details=\"download\"><downloadlink>$url</downloadlink></content>\n";
