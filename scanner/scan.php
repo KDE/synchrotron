@@ -107,7 +107,14 @@ function setupProviders($providers)
         fwrite($providerFile, $providerXml);
         fclose($providerFile);
 
-        $path .= '/v1/content';
+        $path .= '/v1';
+        if (!is_dir($path)) {
+            // in case it already existed as a file?
+            unlink($path);
+            mkdir($path);
+        }
+
+        $path .= '/content';
         if (!is_dir($path)) {
             // in case it already existed as a file?
             unlink($path);
