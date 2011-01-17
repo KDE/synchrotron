@@ -17,7 +17,7 @@ Scanner
 * allow cusomtization of the providers.xml file; others may not want "KDE Synchrotron"
   as the name, after all ;) should probably be in the config file
 
-OCS
+Synchrotron Support of OCS
 * add json support? not sure if it is even useful, but some might prefer it...
 * list.php
     * add more fields to results?
@@ -27,3 +27,21 @@ OCS
 * download.php
     * add more fields to results, perhaps mimetype?
 
+=========
+OCS itself
+
+The OCS reference is here:
+
+    http://freedesktop.org/wiki/Specifications/open-collaboration-services
+
+As a specification, it is in need of improvements. Here are some shortcomings that
+ought to be addressed:
+
+* the XML returns are completely undocumented
+* no file sizes in returns from download, list or get?
+* the "download1", "download2", "download3" naming schemes should be replaced with _real_ xml
+* mass update check mechanism; implemented updated since and new since params to list in
+  synchrotron, but not in the specification; a real oversight for this kind of application
+* request API of download is really underspecified: what's the real differencd between
+  contentid and itemid? yes, you get to figure that our for yourself.
+* the "list" command is actually "data" in the URL; nonsensical
