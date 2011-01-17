@@ -87,7 +87,8 @@ function printItem($id, $name, $version, $updated, $created, $type, $author, $ho
         print "\n<previewpic1>$preview</previewpic1>\n";
     }
 
-    print "     </content>";
+    print '     </content>
+';
 }
 
 function printFooter()
