@@ -89,7 +89,7 @@ unset($where);
 sql_addToWhereClause($where, '', 'p.name', '=', $provider);
 sql_addToWhereClause($where, 'and', 'c.id', '=', $contentId);
 
-$items = db_query($db, "SELECT c.package FROM content c LEFT JOIN providers p ON (c.provider = p.id) WHERE $where;");
+$items = db_query($db, "SELECT c.package, c.externalPackage FROM content c LEFT JOIN providers p ON (c.provider = p.id) WHERE $where;");
 
 if (db_numrows($items) < 1) {
     printHeader(101, _("Content ID '$contentId' not fond"));
@@ -98,8 +98,14 @@ if (db_numrows($items) < 1) {
 }
 
 printHeader(100);
-list($package) = db_row($items, 0);
-printItem($package, $provider);
+list($package, $external) = db_row($items, 0);
+if (db_bool($external)) {
+    $url = $package;
+else ($url) {
+    $url = "common_baseURL/$provider/files/$package";
+}
+print "    <content details=\"download\"><downloadlink>$url</downloadlink></content>\n";
+
 printFooter();
 
 // record the request as a download
