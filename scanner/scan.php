@@ -312,7 +312,8 @@ function processProviderAssets($assets, $packageBasePath, $provider, $providerId
         }
 
         $packageFile = $metadata->getValue('X-Synchrotron-ContentUrl', 'Desktop Entry');
-        if (empty($packageFile)) {
+        $externalPackage = !empty($packageFile);
+        if (!$externalPackage) {
             $packageFile = createPackage($plugin, $path, $packageBasePath, $config);
         }
 
@@ -362,6 +363,7 @@ function processProviderAssets($assets, $packageBasePath, $provider, $providerId
             sql_addIntToUpdate($fields, 'category', $categoryId);
             sql_addRawToUpdate($fields, 'updated', 'current_timestamp');
             sql_addScalarToUpdate($fields, 'package', $packageFile);
+            sql_addBoolToUpdate($fields, 'externalPackage', $externalPackage);
             db_update($db, 'content', $fields, $where);
         } else {
             // new asset!
@@ -376,6 +378,7 @@ function processProviderAssets($assets, $packageBasePath, $provider, $providerId
             sql_addScalarToInsert($fields, $values, 'description', $metadata->getValue('Comment', 'Desktop Entry'));
             sql_addIntToInsert($fields, $values, 'category', $categoryId);
             sql_addScalarToInsert($fields, $values, 'package', $packageFile);
+            sql_addBoolToInsert($fields, $values, 'externalPackage', $externalPackage);
             db_insert($db, 'content', $fields, $values);
         }
     }
