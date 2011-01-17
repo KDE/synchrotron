@@ -45,14 +45,6 @@ function printHeader($status = 100, $message = '')
 ";
 }
 
-function printItem($package, $provider)
-{
-    global $common_baseURL;
-    print "    <content details=\"download\">
-        <downloadlink>$common_baseURL/$provider/files/$package</downloadlink>
-    </content>";
-}
-
 function printFooter()
 {
     print '
