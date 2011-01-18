@@ -45,3 +45,6 @@ ought to be addressed:
 * request API of download is really underspecified: what's the real differencd between
   contentid and itemid? yes, you get to figure that our for yourself.
 * the "list" command is actually "data" in the URL; nonsensical
+* version # syntax is not defined; there is apparently some conventions being used, but
+  nothing is documented! for reliable programatic comparisons (to check, e.g., if the version
+  on the server is newer than what is installed) this is critical
