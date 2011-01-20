@@ -27,7 +27,6 @@
 //     pagesize: The amount of entries per page. 
 //
 // Unsupported parameters from the spec:
-//     categories
 //     user
 //     license
 //     external
@@ -136,6 +135,22 @@ if ($totalItemCount < 1) {
     printHeader(0, $pagesize);
     printFooter();
     exit();
+}
+
+$categories = $_GET['categories'];
+if (!empty($categories)) {
+    $categories = explode('x', $categories);
+    $catsIn = Array();
+    foreach ($categories as $category) {
+        $category = intval($category);
+        if ($category > 0) {
+            array_push($catsIn, $category);
+        }
+    }
+
+    if (!empty($catsIn)) {
+        sql_addToWhereClause($where, 'and', 'category', 'in', '(' . implode(', ', $catsIn) . ')', false, false);
+    }
 }
 
 unset($limit);
