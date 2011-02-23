@@ -11,12 +11,5 @@ BEGIN
 END;
 ' LANGUAGE 'PLPGSQL';
 
-CREATE OR REPLACE FUNCTION synchrotron_clearAccesses() RETURNS VOID AS '
-DECLARE
-BEGIN
-    DELETE FROM accesses WHERE ts < CURRENT_TIMESTAMP - ''15 minutes''::interval;
-END;
-' LANGUAGE 'PLPGSQL';
-
 GRANT EXECUTE ON FUNCTION synchrotron_canAccessApi(INET) TO synchrotron_ro;
 

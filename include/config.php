@@ -35,6 +35,8 @@ $common_includePath = $common_basePath . '/include';
 // DATABASE CONNECTION
 // global $db_hame, $db_host, $db_port, $db_username;
 // global $db_password, $db_localOnly, $db_singleDatabaseOnly;
+$db_type = 'mysql';
+// $db_type = 'postgres';
 $db_name = 'synchrotron';
 $db_host = 'localhost';
 $db_port = '5432';

@@ -26,7 +26,8 @@ $db = SynchrotronDBConnection::copy('write', $synchrotron_dbs['default']);
 $db->db_username = $db_writeusername;
 db_register($db);
 
+$old_time = time() - (60 * 15);
 $db = db_connection('write');
-db_query($db, 'SELECT synchrotron_clearAccesses();');
+db_query($db, "DELETE FROM accesses WHERE ts < {$old_time};");
 
 ?>
