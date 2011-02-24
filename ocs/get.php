@@ -99,7 +99,7 @@ unset($where);
 sql_addToWhereClause($where, '', 'p.name', '=', $provider);
 sql_addToWhereClause($where, 'and', 'c.id', '=', $contentId);
 
-$items = db_query($db, "SELECT c.id, c.name, c.version, date_trunc('second', c.updated), date_trunc('second', c.created), c.author, c.homepage, c.downloads, c.preview FROM content c LEFT JOIN providers p ON (c.provider = p.id) WHERE $where;", 1);
+$items = db_query($db, "SELECT c.id, c.name, c.version, c.updated, c.created, c.author, c.homepage, c.downloads, c.preview FROM content c LEFT JOIN providers p ON (c.provider = p.id) WHERE $where;");
 
 if (db_numrows($items) < 1) {
     printHeader(200, _("Content ID '$contentId' not fond"));
