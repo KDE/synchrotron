@@ -724,7 +724,7 @@ function canAccessApi($addr)
     //uncomment the following line for debug purposes
     //return true;
     unset($where);
-    db_canAccessApi($addr);
+    return db_canAccessApi($addr);
 }
 
 ?>

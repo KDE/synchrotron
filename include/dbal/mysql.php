@@ -282,7 +282,7 @@ function db_numRows($db_query)
 
 function db_row($db_query, $row)
 {
-    return mysql_fetch_row($db_query, $row);
+    return mysql_fetch_row($db_query);
 }
 
 function db_rowArray($db_query, $row)
@@ -463,7 +463,7 @@ function db_canAccessApi($addr)
 
     db_query( "INSERT INTO accesses (address) VALUES ($slashed_ip)");
     $results = db_query( "SELECT COUNT({$slashed_ip}) < 60 FROM accesses WHERE address = p_addr AND ts > {$old_time}");
-    return db_numRows($results);
+    return !db_numRows($results);
 }
 
 ?>

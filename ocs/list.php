@@ -174,7 +174,7 @@ if (empty($sortMode) || $sortMode == 'new') {
     ratings are not supported
 } */
 
-$items = db_query($db, "SELECT c.id, c.name, c.version, date_trunc('second', c.updated), date_trunc('second', c.created), c.author, c.homepage, c.downloads, c.preview FROM content c LEFT JOIN providers p ON (c.provider = p.id) WHERE $where $orderBy $limit $offset;");
+$items = db_query($db, "SELECT c.id, c.name, c.version, c.updated, c.created, c.author, c.homepage, c.downloads, c.preview FROM content c LEFT JOIN providers p ON (c.provider = p.id) WHERE $where $orderBy $limit $offset;");
 
 printHeader($totalItemCount, $pagesize, $page);
 $itemCount = db_numRows($items);
