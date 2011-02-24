@@ -119,7 +119,7 @@ function db_connection($identifier = 'default')
             {
                 $db->resource = mysql_connect($db->db_host, $db->db_username, $db->db_password);
             }
-            mysql_query("USE {$db->db_name};", $db->resource)
+            mysql_query("USE {$db->db_name};", $db->resource);
         }
 
         return $db->resource;
