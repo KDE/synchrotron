@@ -94,7 +94,7 @@ list($package, $external) = db_row($items, 0);
 if (db_boolean($external)) {
     $url = $package;
 } else {
-    $url = "common_baseURL/$provider/files/$package";
+    $url = "$common_baseURL/$provider/files/$package";
 }
 print "    <content details=\"download\"><downloadlink>$url</downloadlink></content>\n";
 
