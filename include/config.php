@@ -43,6 +43,7 @@ $db_port = '5432';
 $db_username = 'synchrotron_ro';
 $db_writeusername = 'synchrotron';
 $db_password = '';
+$db_writepassword = '';
 $db_localOnly = true;
 $db_singleDatabaseOnly = true;
 

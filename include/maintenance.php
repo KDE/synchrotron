@@ -24,6 +24,7 @@ include_once("$common_includePath/db.php");
 
 $db = SynchrotronDBConnection::copy('write', $synchrotron_dbs['default']);
 $db->db_username = $db_writeusername;
+$db->db_password = $db_writepassword;
 db_register($db);
 
 $old_time = time() - (60 * 15);

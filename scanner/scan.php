@@ -25,6 +25,7 @@ include_once("$common_includePath/iniparser.php");
 
 $db = SynchrotronDBConnection::copy('write', $synchrotron_dbs['default']);
 $db->db_username = $db_writeusername;
+$db->db_password = $db_writepassword;
 db_register($db);
 
 $configFile = "$common_repoPath/providers";
