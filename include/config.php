@@ -19,14 +19,9 @@
  */
 
 
-// MAIN CONFIGURATION
-global $common_siteHost, $common_sitePath;
-$common_siteHost = 'http://synchrotron';
-$common_sitePath = '/';
-
 // BASE PATHS AND URLS
 global $common_baseURL, $common_htmlPath, $common_includePath, $common_basePath;
-$common_baseURL = $common_siteHost . $common_sitePath;
+$common_baseURL = 'http://synchrotron';
 $common_basePath = '/home/aseigo/synchrotron';
 $common_repoPath = '/home/aseigo/synchrotron-sources';
 $common_htmlPath = $common_basePath . '/ocs';
