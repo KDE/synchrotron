@@ -44,12 +44,13 @@ function printHeader($status = 100, $message = '')
 ";
 }
 
-function printItem($id, $name, $version, $updated, $created, $type, $author, $homepage, $downloads, $preview)
+function printItem($id, $name, $version, $description, $updated, $created, $type, $author, $homepage, $downloads, $preview)
 {
     print "    <content details=\"full\">
         <id>$id</id>
         <name>$name</name>
         <version>$version</version>
+        <description>$description</description>
         <changed>$updated</changed>
         <created>$created</created>
         <typeid>$type</typeid>
@@ -99,7 +100,7 @@ unset($where);
 sql_addToWhereClause($where, '', 'p.name', '=', $provider);
 sql_addToWhereClause($where, 'and', 'c.id', '=', $contentId);
 
-$items = db_query($db, "SELECT c.id, c.name, c.version, c.updated, c.created, c.author, c.homepage, c.downloads, c.preview FROM content c LEFT JOIN providers p ON (c.provider = p.id) WHERE $where;");
+$items = db_query($db, "SELECT c.id, c.name, c.version, c.description, c.updated, c.created, c.author, c.homepage, c.downloads, c.preview FROM content c LEFT JOIN providers p ON (c.provider = p.id) WHERE $where;");
 
 if (db_numrows($items) < 1) {
     printHeader(200, _("Content ID '$contentId' not fond"));
@@ -108,7 +109,7 @@ if (db_numrows($items) < 1) {
 }
 
 printHeader(100);
-list($id, $name, $version, $updated, $created, $author, $homepage, $downloads, $preview) = db_row($items, 0);
-printItem($id, $name, $version, $updated, $created, '' /* type */, $author, $homepage, $downloads, $preview);
+list($id, $name, $version, $description, $updated, $created, $author, $homepage, $downloads, $preview) = db_row($items, 0);
+printItem($id, $name, $version, $description, $updated, $created, '' /* type */, $author, $homepage, $downloads, $preview);
 printFooter();
 ?>
