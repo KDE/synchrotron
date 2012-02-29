@@ -373,7 +373,7 @@ function db_seqCurrentVal($db_connection, $sequence)
 
 function db_boolean($bool)
 {
-    if ($bool == 't' || $bool == 'true')
+    if ($bool == '1' || $bool == 't' || $bool == 'true')
     {
         return true;
     }
