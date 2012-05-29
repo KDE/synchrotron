@@ -333,7 +333,11 @@ function processProviderAssets($assets, $packageBasePath, $provider, $providerId
         } else {
             unset($where);
             sql_addToWhereClause($where, '', 'provider', '=', $providerId);
-            sql_addToWhereClause($where, 'and', 'name', 'ILIKE', $category);
+            if ($db_type == 'postgres') {
+                sql_addToWhereClause($where, 'and', 'name', 'ILIKE', $category);
+            } else {
+                sql_addToWhereClause($where, 'and', 'name', 'LIKE', $category);
+            }
             $query = db_query($db, "SELECT id FROM categories WHERE $where");
             if (db_numRows($query) < 1) {
                 unset($fields, $values);
