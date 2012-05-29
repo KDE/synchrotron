@@ -142,24 +142,24 @@ function createCategoriesFile($provider)
         return;
     }
 
+    $db = db_connection('write');
+    unset($where);
+    sql_addToWhereClause($where, '', 'p.name', '=', $provider);
+    $query = db_query($db, "SELECT c.id, c.name FROM categories c LEFT JOIN providers p ON (c.provider = p.id) WHERE $where");
+    $numResults = db_numrows($query);
+
     $headerXml = '<?xml version="1.0"?>
 <ocs>
     <meta>
         <status>ok</status>
         <statuscode>100</statuscode>
         <message></message>
-        <totalitems>4</totalitems>
+        <totalitems>' . $numResults . '</totalitems>
     </meta>
 <data>
 ';
 
     fwrite($fd, $headerXml);
-
-    $db = db_connection('write');
-    unset($where);
-    sql_addToWhereClause($where, '', 'p.name', '=', $provider);
-    $query = db_query($db, "SELECT c.id, c.name FROM categories c LEFT JOIN providers p ON (c.provider = p.id) WHERE $where");
-    $numResults = db_numrows($query);
 
     for ($i = 0; $i < $numResults; ++$i) {
         list($id, $name) = db_row($query, $i);
