@@ -173,7 +173,7 @@ function createCategoriesFile($provider)
 // finds all entries that have changed in the git repository
 function findChangedAssets($config, $providers)
 {
-    global $common_repoPath;
+    global $common_repoPath, $verbose;
     $assets = Array();
     if (!chdir($common_repoPath)) {
         print("Could not change directory to the repository!\n");
@@ -186,11 +186,15 @@ function findChangedAssets($config, $providers)
 
     // no scan! do it from scratch then...
     if (db_numRows($ts) < 1) {
-        //print("Fresh scan!\n");
+        if ($verbose) {
+            print("Fresh scan!\n");
+        }
         setupProviders($providers);
 
         foreach ($config as $provider => $providerConfig) {
-            //print("Listing all assets for $provider\n");
+            if ($verbose) {
+                print("Listing all assets for $provider\n");
+            }
             $providerAssets = Array();
             $path = "$common_repoPath/$provider";
             $dir = opendir($path);
@@ -201,7 +205,9 @@ function findChangedAssets($config, $providers)
 
             while (false != ($entry = readdir($dir))) {
                 if ($entry[0] == '.') {
-                    //print("'$path/$entry' is a hidden dir.\n");
+                    if ($verbose) {
+                        print("'$path/$entry' is a hidden dir.\n");
+                    }
                     continue;
                 }
 
@@ -224,7 +230,9 @@ function findChangedAssets($config, $providers)
         db_query($db, "UPDATE scanning set lastScan = CURRENT_TIMESTAMP;");
 
         foreach ($config as $provider => $providerConfig) {
-            //print("Listing all assets for $provider\n");
+            if ($verbose) {
+                print("Listing all assets for $provider\n");
+            }
             $assets[$provider] = Array();
         }
 
@@ -287,6 +295,7 @@ function deleteAsset($providerId, $asset)
 
 function processProviderAssets($assets, $packageBasePath, $provider, $providerId, $config)
 {
+    global $verbose;
     $metadataPath = $config['metadata'];
     if (empty($metadataPath)) {
         $metadataPath = 'metadata.desktop';
@@ -297,9 +306,13 @@ function processProviderAssets($assets, $packageBasePath, $provider, $providerId
     $db = db_connection('write');
 
     foreach ($assets as $asset => $path) {
-        //print("Processing $providerId $asset at $path\n");
+        if ($verbose) {
+            print("Processing $providerId $asset at $path\n");
+        }
         if (!is_file("$path/$metadataPath")) {
-            //print("No such thing as $path/$metadataPath, perhaps it was deleted?\n");
+            if ($verbose) {
+                print("No such thing as $path/$metadataPath, perhaps it was deleted?\n");
+            }
             deleteAsset($providerId, $asset);
             continue;
         }
@@ -490,9 +503,12 @@ function createPackage($asset, $source, $dest, $config)
 
 function addToZip($zip, $basePath, $file, $subPath = '')
 {
+    global $verbose;
     $path = empty($subPath) ? $file : "$subPath/$file";
     $srcPath = "$basePath/$path";
-    //print("adding $file from $srcPath to $path\n");
+    if ($verbose) {
+        print("adding $file from $srcPath to $path\n");
+    }
     if (is_file($srcPath)) {
         if (!$zip->addFile($srcPath, $path)) {
             print("Failed to add $path to $packagePath");
@@ -520,6 +536,8 @@ function addToZip($zip, $basePath, $file, $subPath = '')
 }
 
 lock();
+
+$verbose = getopt('v');
 
 if (getopt('f')) {
     $db = db_connection('write');
