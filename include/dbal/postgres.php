@@ -132,6 +132,14 @@ function db_connection($identifier = 'default')
             {
                 $db->resource = pg_connect($db->connectString(), PGSQL_CONNECT_FORCE_NEW);
             }
+            
+            if(!$db->resource) {
+                global $db_debug;
+                if($db_debug) {
+                    print "Could not connect to PostgreSQL\n";
+                    exit(0);
+                }
+            }
         }
 
         return $db->resource;
