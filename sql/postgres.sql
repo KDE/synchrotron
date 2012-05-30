@@ -48,7 +48,7 @@ CREATE TABLE content
 (
     id          TEXT        NOT NULL,
     provider    INT         NOT NULL REFERENCES providers(id) ON DELETE CASCADE,
-    category    INT         NOT NULL REFERENCES providers(id) ON DELETE SET NULL,
+    category    INT         NOT NULL REFERENCES categories(id) ON DELETE SET NULL,
     created     TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated     TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
     downloads   INT         NOT NULL DEFAULT 0,
