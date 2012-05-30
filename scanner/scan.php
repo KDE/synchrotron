@@ -521,6 +521,11 @@ function addToZip($zip, $basePath, $file, $subPath = '')
 
 lock();
 
+if (getopt('f')) {
+    $db = db_connection('write');
+    db_query($db, "delete from scanning;");
+}
+
 $config = parse_ini_file($configFile, true);
 $providers = providers($config);
 $changedAssets = findChangedAssets($config, $providers);
