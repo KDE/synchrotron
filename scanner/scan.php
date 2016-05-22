@@ -346,6 +346,7 @@ function processProviderAssets($assets, $packageBasePath, $provider, $providerId
         } else {
             unset($where);
             sql_addToWhereClause($where, '', 'provider', '=', $providerId);
+            global $db_type;
             if ($db_type == 'postgres') {
                 sql_addToWhereClause($where, 'and', 'name', 'ILIKE', $category);
             } else {
