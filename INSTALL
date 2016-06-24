@@ -18,7 +18,7 @@ Software requirements:
 
 Install and Setup:
 * edit include config.php
-    * paths to synhcrotron
+    * paths to synchrotron
     * path to source repository
     * web URL root
     * database connection information
