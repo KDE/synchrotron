@@ -57,7 +57,7 @@ CREATE TABLE content
     externalPackage     BOOL    NOT NULL DEFAULT FALSE,
     CONSTRAINT content_pk PRIMARY KEY (id, provider),
     FOREIGN KEY (provider) REFERENCES providers(id) ON DELETE CASCADE,
-    FOREIGN KEY (category) REFERENCES providers(id) ON DELETE SET NULL
+    FOREIGN KEY (category) REFERENCES categories(id) ON DELETE SET NULL
 ) ENGINE=INNODB;
 
 -- DROP TABLE accesscounts;
