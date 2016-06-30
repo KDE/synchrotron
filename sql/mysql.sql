@@ -60,7 +60,7 @@ CREATE TABLE content
     FOREIGN KEY (category) REFERENCES categories(id) ON DELETE SET NULL
 ) ENGINE=INNODB;
 
--- DROP TABLE accesscounts;
+-- DROP TABLE accesses;
 CREATE TABLE accesses
 (
     address     VARCHAR(255) NOT NULL,
